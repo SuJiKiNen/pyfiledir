@@ -1,0 +1,16 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+pdbpp = {index = "http://pypi.douban.com/simple/",version = "*"}
+flake8 = {index = "http://pypi.douban.com/simple/",version = "*"}
+pytest = {index = "http://pypi.douban.com/simple/",version = "*"}
+pyfakefs = {index = "http://pypi.douban.com/simple/",version = "*"}
+ipython = {index = "http://pypi.douban.com/simple/",version = "*"}
+
+[packages]
+
+[requires]
+python_version = "3.6"
