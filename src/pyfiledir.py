@@ -1,10 +1,13 @@
 #!/usr/bin/env python
 
+import locale
 import os
 import subprocess
 import sys
 from functools import lru_cache
 from pathlib import Path
+
+SEP = " "
 
 
 def _is_zsh():
@@ -15,11 +18,24 @@ def _expanduser(path):
     return path
 
 
-def _rstrip_num(path):
+def _rstrip_selection(path):
     num = None
-    if len(path) > 1 and path[-1] > '0' and path[-1] <= '9':
+    if len(path) > 1 and path[-1] >= '0' and path[-1] <= '9':
         num = int(path[-1])
-    return path, num
+    return path[:-1], num
+
+
+def isascii(path):
+    try:
+        path.encode('ascii')
+        return True
+    except UnicodeEncodeError:
+        return False
+
+
+def unicode_sort(dirs=[]):
+    locale.setlocale(locale.LC_ALL, "")
+    return sorted(dirs, key=locale.strxfrm)
 
 
 @lru_cache(maxsize=1024)
@@ -132,7 +148,10 @@ def do_py_completion(path):
         sys.exit(0)
 
     py_view_path = _expanduser(path)
-    py_view_path, num = _rstrip_num(py_view_path)
+    if not isascii(py_view_path):
+        py_view_path, sel = _rstrip_selection(py_view_path)
+    else:
+        sel = None
 
     py_view_basename = os.path.basename(py_view_path)
     py_view_dirname = os.path.dirname(py_view_path)
@@ -144,10 +163,11 @@ def do_py_completion(path):
             comp_path = Path(comp_path).as_posix()
             ret.append(comp_path)
 
-    if num and len(ret) > num - 1:
-        return ret[num-1]
+    if sel:
+        ret = unicode_sort(ret)
+        return SEP.join(ret[sel:sel+1])
     else:
-        return " ".join(ret)
+        return SEP.join(ret)
 
 
 if __name__ == '__main__':

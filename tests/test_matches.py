@@ -1,6 +1,7 @@
 import os
 
-from src.pyfiledir import do_py_completion
+import pytest
+from src.pyfiledir import SEP, do_py_completion, unicode_sort
 
 
 def test_completion_not_expand_tilde(fs):
@@ -22,4 +23,21 @@ def test_empty_basename_match_all_files_in_directory(fs):
     fs.create_dir(home_dir)
     fs.create_dir(os.path.join(home_dir, "subdir1"))
     fs.create_dir(os.path.join(home_dir, "subdir2"))
-    assert do_py_completion("~/") == " ".join(["~/subdir1", "~/subdir2"])
+    assert do_py_completion("~/") == SEP.join(["~/subdir1", "~/subdir2"])
+
+
+@pytest.mark.parametrize("dirs,typed,output", [
+    (
+        ["/1024", "/1025"],
+        "/1",
+        ["/1024", "/1025"],
+    ),
+    (
+        ["/个人图片", "/个人信息"],
+        "/个" + "1",
+        [unicode_sort(["/个人图片", "/个人信息"])[1]],
+    ),
+])
+def test_number_selection(dirs, typed, output, fs):
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(output)
