@@ -5,7 +5,6 @@ import os
 import subprocess
 import sys
 from functools import lru_cache
-from pathlib import Path
 
 SEP = " "
 
@@ -14,15 +13,13 @@ def _is_zsh():
     return 'zsh' in os.environ['SHELL']
 
 
-def _expanduser(path):
-    return path
-
-
-def _rstrip_selection(path):
-    num = None
-    if len(path) > 1 and path[-1] >= '0' and path[-1] <= '9':
-        num = int(path[-1])
-    return path[:-1], num
+def rsplit_selection(path):
+    sel = None
+    if path and not isascii(path) and path[-1].isdigit():
+        sel = int(path[-1])
+        return path[:-1], slice(sel, sel+1, 1)
+    else:
+        return path, slice(None, None, 1)
 
 
 def isascii(path):
@@ -134,40 +131,28 @@ def do_escape_path(path):
 
 
 def do_py_completion(path):
-    os_view_path = os.path.expanduser(path)
-    os_view_dirname = os.path.dirname(os_view_path)
-    if not os_view_dirname:
-        os_view_dirname = "./"
 
-    if not os.path.exists(os_view_dirname):
+    path, pieces = rsplit_selection(path)
+    basename = os.path.basename(path)
+    dirname = os.path.dirname(path)
+    expanded_dirname = os.path.expanduser(dirname) or "./"
+
+    if not os.path.exists(expanded_dirname):
         sys.exit(0)
 
     try:
-        files = os.listdir(os_view_dirname)
+        files = os.listdir(expanded_dirname)
     except Exception:
         sys.exit(0)
 
-    py_view_path = _expanduser(path)
-    if not isascii(py_view_path):
-        py_view_path, sel = _rstrip_selection(py_view_path)
-    else:
-        sel = None
-
-    py_view_basename = os.path.basename(py_view_path)
-    py_view_dirname = os.path.dirname(py_view_path)
-
     ret = []
     for f in files:
-        if do_py_match(filename=f, abbrev=py_view_basename):
-            comp_path = os.path.join(py_view_dirname, f)
-            comp_path = Path(comp_path).as_posix()
+        if do_py_match(filename=f, abbrev=basename):
+            comp_path = os.path.join(dirname, f)
             ret.append(comp_path)
 
-    if sel:
-        ret = unicode_sort(ret)
-        return SEP.join(ret[sel:sel+1])
-    else:
-        return SEP.join(ret)
+    ret = unicode_sort(ret)
+    return SEP.join(ret[pieces])
 
 
 if __name__ == '__main__':

@@ -17,6 +17,23 @@ def test_completion_not_expand_tilde(fs):
     assert do_py_completion("~/c") == target_dir
 
 
+def test_completion_keep_leading_dot_slash(fs):
+    os.environ['HOME'] = '/home/test'
+    home_dir = '/home/test'
+    fs.create_dir(os.path.join(home_dir, "subdir1"))
+    fs.create_dir(os.path.join(home_dir, "subdir2"))
+    os.chdir(home_dir)
+    assert do_py_completion("./") == SEP.join(["./subdir1", "./subdir2"])
+
+
+def test_complete_implicit_current_directory(fs):
+    os.environ['HOME'] = '/home/test'
+    home_dir = '/home/test'
+    fs.create_dir(home_dir)
+    os.chdir("/home")
+    assert do_py_completion("t") == SEP.join(["test"])
+
+
 def test_empty_basename_match_all_files_in_directory(fs):
     home_dir = '/home/test'
     os.environ['HOME'] = home_dir
