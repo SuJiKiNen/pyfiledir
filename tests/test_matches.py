@@ -1,6 +1,7 @@
 import os
 
 import pytest
+
 from src.pyfiledir import SEP, do_py_completion, unicode_sort
 
 
@@ -43,7 +44,7 @@ def test_empty_basename_match_all_files_in_directory(fs):
     assert do_py_completion("~/") == SEP.join(["~/subdir1", "~/subdir2"])
 
 
-@pytest.mark.parametrize("dirs,typed,output", [
+@pytest.mark.parametrize("dirs,typed,excepted", [
     (
         ["/1024", "/1025"],
         "/1",
@@ -52,9 +53,31 @@ def test_empty_basename_match_all_files_in_directory(fs):
     (
         ["/个人图片", "/个人信息"],
         "/个" + "1",
-        [unicode_sort(["/个人图片", "/个人信息"])[1]],
+        [unicode_sort(["/个人图片", "/个人信息"])[0]],
     ),
 ])
-def test_number_selection(dirs, typed, output, fs):
+def test_number_selection(dirs, typed, excepted, fs):
     [fs.create_dir(d) for d in dirs]
-    assert do_py_completion(typed) == SEP.join(output)
+    assert do_py_completion(typed) == SEP.join(excepted)
+
+
+@pytest.mark.parametrize("dirs,typed,excepted", [
+    (
+        ["第{}组".format(i) for i in range(1, 9)],
+        "d1",
+        ["第1组"],
+    ),
+    (
+        ["第{}组".format(i) for i in range(1, 9)],
+        "第1",
+        ["第1组"],
+    ),
+    (
+        ["第{}组".format(i) for i in range(1, 20)],
+        "第11",
+        ["第10组"],
+    ),
+])
+def test_number_selection_start_from_one(dirs, typed, excepted, fs):
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(excepted)

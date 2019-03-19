@@ -13,16 +13,22 @@ def _is_zsh():
     return 'zsh' in os.environ['SHELL']
 
 
+def char_range(c1, c2):
+    """Generates the characters from `c1` to `c2`, inclusive."""
+    for c in range(ord(c1), ord(c2)+1):
+        yield chr(c)
+
+
 def rsplit_selection(path):
     sel = None
-    if path and not isascii(path) and path[-1].isdigit():
+    if path and not all_ascii(path) and path[-1] in char_range('1', '9'):
         sel = int(path[-1])
-        return path[:-1], slice(sel, sel + 1, 1)
+        return path[:-1], slice(sel-1, sel, 1)
     else:
         return path, slice(None, None, 1)
 
 
-def isascii(path):
+def all_ascii(path):
     try:
         path.encode('ascii')
         return True
