@@ -17,7 +17,7 @@ def rsplit_selection(path):
     sel = None
     if path and not isascii(path) and path[-1].isdigit():
         sel = int(path[-1])
-        return path[:-1], slice(sel, sel+1, 1)
+        return path[:-1], slice(sel, sel + 1, 1)
     else:
         return path, slice(None, None, 1)
 
@@ -149,6 +149,7 @@ def do_py_completion(path):
     for f in files:
         if do_py_match(filename=f, abbrev=basename):
             comp_path = os.path.join(dirname, f)
+            comp_path = comp_path.replace(os.path.sep, "/")
             ret.append(comp_path)
 
     ret = unicode_sort(ret)
