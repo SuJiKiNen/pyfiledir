@@ -1,6 +1,8 @@
+import os
+
 import pytest
 
-from src.pyfiledir import all_ascii, rsplit_selection
+from src.pyfiledir import all_ascii, rsplit_selection, same_path
 
 
 @pytest.mark.parametrize("path,excepted", [
@@ -17,3 +19,9 @@ def test_rsplit_selection(path, excepted):
 ])
 def test_isascii(path, excepted):
     assert all_ascii(path) == excepted
+
+
+def test_same_path(fs):
+    os.environ['HOME'] = '/home/test'
+    home_dir = '/home/test'
+    assert same_path(home_dir, "~/")

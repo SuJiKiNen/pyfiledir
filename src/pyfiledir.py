@@ -136,6 +136,14 @@ def do_escape_path(path):
     return ret.stdout.decode("utf-8")
 
 
+def same_path(path1, path2):
+    path1 = os.path.expanduser(path1)
+    path1 = os.path.normpath(path1)
+    path2 = os.path.expanduser(path2)
+    path2 = os.path.normpath(path2)
+    return path1 == path2
+
+
 def do_py_completion(path):
 
     path, pieces = rsplit_selection(path)
@@ -155,9 +163,12 @@ def do_py_completion(path):
     for f in files:
         if do_py_match(filename=f, abbrev=basename):
             comp_path = os.path.join(dirname, f)
-            comp_path = comp_path.replace(os.path.sep, "/")
             ret.append(comp_path)
 
+    if len(ret) == 1 and same_path(ret[0], path):
+        ret[0] = ret[0] + os.path.sep
+
+    ret = [p.replace(os.path.sep, "/") for p in ret]  # post processing path
     ret = unicode_sort(ret)
     return SEP.join(ret[pieces])
 

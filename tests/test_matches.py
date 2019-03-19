@@ -81,3 +81,9 @@ def test_number_selection(dirs, typed, excepted, fs):
 def test_number_selection_start_from_one(dirs, typed, excepted, fs):
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
+
+
+def test_solo_completion_do_completion_again_add_forward_slash(fs):
+    fs.create_dir("/test")
+    assert do_py_completion("/test") == "/test/"
+    assert do_py_completion(do_py_completion("/te")) == "/test/"
