@@ -166,7 +166,7 @@ def do_py_completion(path):
             ret.append(comp_path)
 
     if len(ret) == 1 and same_path(ret[0], path):
-        ret[0] = ret[0] + os.path.sep
+        ret[0] = os.path.join(ret[0], "")  # add trailing slash
 
     ret = [p.replace(os.path.sep, "/") for p in ret]  # post processing path
     ret = unicode_sort(ret)
