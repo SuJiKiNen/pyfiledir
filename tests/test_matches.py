@@ -90,7 +90,13 @@ def test_number_selection_start_from_one(dirs, typed, excepted, fs):
     assert do_py_completion(typed) == SEP.join(excepted)
 
 
-def test_solo_completion_do_completion_again_add_forward_slash(fs):
-    fs.create_dir("/test")
-    assert do_py_completion("/test") == "/test/"
-    assert do_py_completion(do_py_completion("/te")) == "/test/"
+def test_solo_completion_on_dirs_do_completion_again_add_forward_slash(fs):
+    fs.create_dir("/test_dir")
+    assert do_py_completion("/test_dir") == "/test_dir/"
+    assert do_py_completion(do_py_completion("/te")) == "/test_dir/"
+
+
+def test_solo_completion_on_files_do_completion_again_not_add_forward_slash(fs):
+    fs.create_file("/test_file")
+    assert do_py_completion("/test_file") == "/test_file"
+    assert do_py_completion(do_py_completion("/te")) == "/test_file"
