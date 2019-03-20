@@ -35,13 +35,20 @@ def test_complete_implicit_current_directory(fs):
     assert do_py_completion("t") == SEP.join(["test"])
 
 
-def test_empty_basename_match_all_files_in_directory(fs):
+@pytest.mark.parametrize("dirs,files,typed,excepted", [
+    (["subdir1", "subdir2"], ["file1", "file2"], "~/", unicode_sort(["subdir1", "subdir2", "file1", "file2"])),
+    (["subdir1", "subdir2"], [], "~/", unicode_sort(["subdir1", "subdir2"])),
+    ([], ["file1", "file2"], "~/", unicode_sort(["file1", "file2"])),
+])
+def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs):
     home_dir = '/home/test'
     os.environ['HOME'] = home_dir
-    fs.create_dir(home_dir)
-    fs.create_dir(os.path.join(home_dir, "subdir1"))
-    fs.create_dir(os.path.join(home_dir, "subdir2"))
-    assert do_py_completion("~/") == SEP.join(["~/subdir1", "~/subdir2"])
+    for d in dirs:
+        fs.create_dir(os.path.join(home_dir, d))
+    for f in files:
+        fs.create_file(os.path.join(home_dir, f))
+    excepted = [os.path.join("~/", f) for f in excepted]
+    assert do_py_completion(typed) == SEP.join(excepted)
 
 
 @pytest.mark.parametrize("dirs,typed,excepted", [
