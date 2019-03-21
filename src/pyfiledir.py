@@ -6,7 +6,7 @@ import subprocess
 import sys
 from functools import lru_cache
 
-SEP = " "
+SEP = "\n"
 
 
 def _is_zsh():
