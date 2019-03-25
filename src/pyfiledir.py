@@ -2,11 +2,10 @@
 
 import locale
 import os
-import subprocess
 import sys
 from functools import lru_cache
 
-SEP = " "
+SEP = "\n"
 
 
 def _is_zsh():
@@ -109,31 +108,6 @@ def do_py_match(filename, abbrev):
         if not (filename[i] == char or get_py(filename[i]) == char):
             return False
     return True
-
-
-def do_unescape_path(path):
-    ret = subprocess.run(
-        [
-            'echo',
-            '-e',  # enable interpretation of backslash escapes
-            '-n',  # do not output the trailing newline
-            path
-        ],
-        stdout=subprocess.PIPE
-    )
-    return ret.stdout.decode('utf-8')
-
-
-def do_escape_path(path):
-    ret = subprocess.run(
-        [
-            'printf',
-            '%q',
-            path
-        ],
-        stdout=subprocess.PIPE
-    )
-    return ret.stdout.decode("utf-8")
 
 
 def same_path(path1, path2):
