@@ -5,14 +5,23 @@ _pinyin_abbrev_completion() {
     # see https://stackoverflow.com/questions/1146098/properly-handling-spaces-and-quotes-in-bash-completion
     local IFS
     local cur
+    local words
     IFS=$'\n'
     cur="${COMP_WORDS[COMP_CWORD]}"
-    words=$(pyfiledir "$cur")
+    if command -v dos2unix >/dev/null 2>&1; then
+        words=$(pyfiledir "$cur" | dos2unix)
+    else
+        words=$(pyfiledir "$cur")
+    fi
+    local length
     words=($(compgen -W "${words[*]}"))
-    if [[ "${#words[*]}" -eq 0 ]]; then
+    length="${#words[@]}"
+    if [[ "$length" -eq 1 ]]; then
+        COMPREPLY=($(printf '%q'"$IFS" "${words[@]}"))
+    elif [[ "$length" -eq 0 ]]; then
         COMPREPLY=()
     else
-        COMPREPLY=($(printf '%q\n' "${words[@]}"))
+        COMPREPLY=($(printf '%s'"$IFS" "${words[@]}"))
     fi
 }
 
