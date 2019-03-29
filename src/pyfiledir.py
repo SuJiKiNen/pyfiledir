@@ -144,6 +144,10 @@ def same_path(path1, path2):
     return path1 == path2
 
 
+def as_unix_path(path):
+    return path.replace(os.path.sep, "/")
+
+
 def do_py_completion(path):
 
     path, pieces = rsplit_selection(path)
@@ -168,7 +172,7 @@ def do_py_completion(path):
     if len(ret) == 1 and os.path.isdir(ret[0]) and same_path(ret[0], path):
         ret[0] = os.path.join(ret[0], "")  # add trailing slash
 
-    ret = [p.replace(os.path.sep, "/") for p in ret]  # post processing path
+    ret = [as_unix_path(p) for p in ret]  # post processing path
     ret = unicode_sort(ret)
     return SEP.join(ret[pieces])
 
