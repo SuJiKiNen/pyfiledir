@@ -5,15 +5,16 @@ _pinyin_abbrev_completion() {
     # see https://stackoverflow.com/questions/1146098/properly-handling-spaces-and-quotes-in-bash-completion
     local IFS
     local cur
+    local length
     local words
     IFS=$'\n'
     cur="${COMP_WORDS[COMP_CWORD]}"
+    cur=$(eval echo "$cur") # unquote current input
     if command -v dos2unix >/dev/null 2>&1; then
         words=$(pyfiledir "$cur" | dos2unix)
     else
         words=$(pyfiledir "$cur")
     fi
-    local length
     words=($(compgen -W "${words[*]}"))
     length="${#words[@]}"
     if [[ "$length" -eq 1 ]]; then
