@@ -21,7 +21,11 @@ def char_range(c1, c2):
 
 def rsplit_selection(path):
     sel = None
-    if path and not all_ascii(path) and path[-1] in char_range('1', '9'):
+    if (
+            path
+            and not all_ascii(path)
+            and path[-1] in char_range('1', '9')
+    ):
         sel = int(path[-1])
         return path[:-1], slice(sel-1, sel, 1)
     else:
