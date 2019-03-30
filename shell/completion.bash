@@ -17,12 +17,10 @@ _pinyin_abbrev_completion() {
     fi
     words=($(compgen -W "${words[*]}"))
     length="${#words[@]}"
-    if [[ "$length" -eq 1 ]]; then
-        COMPREPLY=($(printf '%q'"$IFS" "${words[@]}"))
-    elif [[ "$length" -eq 0 ]]; then
+    if [[ "$length" -eq 0 ]]; then
         COMPREPLY=()
     else
-        COMPREPLY=($(printf '%s'"$IFS" "${words[@]}"))
+        COMPREPLY=($(printf '%q'"$IFS" "${words[@]}"))
     fi
 }
 
