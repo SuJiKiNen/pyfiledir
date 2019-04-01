@@ -20,7 +20,11 @@ def char_range(c1, c2):
 
 def rsplit_selection(path):
     sel = None
-    if path and not all_ascii(path) and path[-1] in char_range('1', '9'):
+    if (
+            path
+            and not all_ascii(path)
+            and path[-1] in char_range('1', '9')
+    ):
         sel = int(path[-1])
         return path[:-1], slice(sel-1, sel, 1)
     else:
@@ -118,6 +122,10 @@ def same_path(path1, path2):
     return path1 == path2
 
 
+def as_unix_path(path):
+    return path.replace(os.path.sep, "/")
+
+
 def do_py_completion(path):
 
     path, pieces = rsplit_selection(path)
@@ -142,7 +150,7 @@ def do_py_completion(path):
     if len(ret) == 1 and os.path.isdir(ret[0]) and same_path(ret[0], path):
         ret[0] = os.path.join(ret[0], "")  # add trailing slash
 
-    ret = [p.replace(os.path.sep, "/") for p in ret]  # post processing path
+    ret = [as_unix_path(p) for p in ret]  # post processing path
     ret = unicode_sort(ret)
     return SEP.join(ret[pieces])
 
@@ -151,4 +159,4 @@ if __name__ == '__main__':
     if _is_zsh():
         sys.exit(0)
     if len(sys.argv) >= 2:
-        print(do_py_completion(path=sys.argv[1]))
+        print(do_py_completion(path=sys.argv[1]), end="")

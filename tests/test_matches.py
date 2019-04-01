@@ -2,7 +2,7 @@ import os
 
 import pytest
 
-from src.pyfiledir import SEP, do_py_completion, unicode_sort
+from src.pyfiledir import SEP, as_unix_path, do_py_completion, unicode_sort
 
 
 def test_completion_not_expand_tilde(fs):
@@ -47,7 +47,7 @@ def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed,
         fs.create_dir(os.path.join(home_dir, d))
     for f in files:
         fs.create_file(os.path.join(home_dir, f))
-    excepted = [os.path.join("~/", f) for f in excepted]
+    excepted = [as_unix_path(os.path.join("~/", f)) for f in excepted]
     assert do_py_completion(typed) == SEP.join(excepted)
 
 
@@ -56,6 +56,11 @@ def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed,
         ["/1024", "/1025"],
         "/1",
         ["/1024", "/1025"],
+    ),
+    (
+        ["/2021_12_28", "/2023_10_15", "/2025_04_12"],
+        "/2023",
+        ["/2023_10_15"],
     ),
     (
         ["/个人图片", "/个人信息"],
