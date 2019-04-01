@@ -9,7 +9,7 @@ _pinyin_abbrev_completion() {
     local words
     IFS=$'\n'
     cur="${COMP_WORDS[COMP_CWORD]}"
-    cur=$(eval echo "$cur") # unquote current input
+    cur=$(eval printf '%s' "$cur") # unquote current input
     if command -v dos2unix >/dev/null 2>&1; then
         words=$(pyfiledir "$cur" | dos2unix)
     else
