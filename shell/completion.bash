@@ -16,6 +16,15 @@ _pinyin_abbrev_completion() {
         words=$(pyfiledir "$cur")
     fi
     words=($(compgen -W "${words[*]}"))
+
+    if command -v cygpath > /dev/null 2>&1; then
+        # convert Windows style path to Unix One
+        # like D:\ => /d/
+        for ix in "${!words[@]}"; do
+            words[$ix]=$(cygpath -u "${words[$ix]}")
+        done
+    fi
+
     length="${#words[@]}"
     if [[ "$length" -eq 0 ]]; then
         COMPREPLY=()
