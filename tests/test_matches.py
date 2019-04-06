@@ -1,8 +1,13 @@
 import os
 
 import pytest
-
-from src.pyfiledir import SEP, as_unix_path, do_py_completion, unicode_sort
+from src.pyfiledir import (
+    SEP,
+    as_unix_path,
+    do_polyphone_match,
+    do_py_completion,
+    unicode_sort,
+)
 
 
 def test_completion_not_expand_tilde(fs):
@@ -105,3 +110,24 @@ def test_solo_completion_on_files_do_completion_again_not_add_forward_slash(fs):
     fs.create_file("/test_file")
     assert do_py_completion("/test_file") == "/test_file"
     assert do_py_completion(do_py_completion("/te")) == "/test_file"
+
+
+@pytest.mark.parametrize("cn_char,alpha", [
+    ("重", "c"),
+    ("重", "z"),
+    ("乐", "l"),
+    ("乐", "y"),
+])
+def test_do_polyphone_match(cn_char, alpha):
+    assert do_polyphone_match(cn_char, alpha)
+
+
+@pytest.mark.parametrize("dirs,typed,excepted", [
+    (["/乐趣"], "/lq", ["/乐趣"]),
+    (["/音乐"], "/yl", ["/音乐"]),
+    (["/重要"], "/zy", ["/重要"]),
+    (["/重复"], "/cf", ["/重复"]),
+])
+def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(excepted)
