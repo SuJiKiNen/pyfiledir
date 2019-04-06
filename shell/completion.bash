@@ -33,4 +33,6 @@ _pinyin_abbrev_completion() {
     fi
 }
 
-complete -o "nospace" -o "bashdefault" -o "default" -F _pinyin_abbrev_completion ls cd cat
+if [[ -n "$BASH_VERSION" ]]; then
+    complete -o "nospace" -o "bashdefault" -o "default" -F _pinyin_abbrev_completion ls cd cat
+fi

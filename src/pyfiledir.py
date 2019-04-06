@@ -8,8 +8,6 @@ from functools import lru_cache
 SEP = "\n"
 
 
-def _is_zsh():
-    return 'zsh' in os.environ['SHELL']
 
 
 def char_range(c1, c2):
@@ -156,7 +154,5 @@ def do_py_completion(path):
 
 
 if __name__ == '__main__':
-    if _is_zsh():
-        sys.exit(0)
     if len(sys.argv) >= 2:
         print(do_py_completion(path=sys.argv[1]), end="")
