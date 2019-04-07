@@ -137,7 +137,7 @@ POLYPHONE_TABLE = {
 }
 
 for cn_char, pys in POLYPHONE_TABLE.items():
-    POLYPHONE_TABLE[cn_char] = (py[0] for py in pys)
+    POLYPHONE_TABLE[cn_char] = [py[0] for py in pys]
 
 
 def char_range(c1, c2):

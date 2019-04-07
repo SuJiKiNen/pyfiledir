@@ -124,7 +124,7 @@ def test_do_polyphone_match(cn_char, alpha):
 
 @pytest.mark.parametrize("dirs,typed,excepted", [
     (["/乐趣"], "/lq", ["/乐趣"]),
-    (["/音乐"], "/yl", ["/音乐"]),
+    (["/音乐"], "/yy", ["/音乐"]),
     (["/重要"], "/zy", ["/重要"]),
     (["/重复"], "/cf", ["/重复"]),
 ])
