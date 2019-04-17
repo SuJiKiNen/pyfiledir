@@ -5,7 +5,7 @@ import os
 import sys
 from functools import lru_cache
 
-SEP = "\n"
+PYFILEDIR_CANDIDATE_SEP = "\n"
 PYFILEDIR_WILDCARD = '#'
 
 POLYPHONE_TABLE = {
@@ -292,7 +292,7 @@ def do_py_completion(path):
 
     ret = [as_unix_path(p) for p in ret]  # post processing path
     ret = unicode_sort(ret)
-    return SEP.join(ret[pieces])
+    return PYFILEDIR_CANDIDATE_SEP.join(ret[pieces])
 
 
 if __name__ == '__main__':

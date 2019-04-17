@@ -1,8 +1,8 @@
 import os
 
 import pytest
+from src.pyfiledir import PYFILEDIR_CANDIDATE_SEP as SEP
 from src.pyfiledir import (
-    SEP,
     as_unix_path,
     do_polyphone_match,
     do_py_completion,
