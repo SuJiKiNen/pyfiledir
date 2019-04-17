@@ -131,3 +131,12 @@ def test_do_polyphone_match(cn_char, alpha):
 def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
+
+
+@pytest.mark.parametrize("dirs,typed,excepted", [
+    (["/芙蓉", "/fr"], "/##", ["/芙蓉"]),
+    (["/目录"], "/##", ["/目录"]),
+])
+def test_number_sign_is_unicode_wildcard(dirs, typed, excepted, fs):
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(excepted)

@@ -6,6 +6,7 @@ import sys
 from functools import lru_cache
 
 SEP = "\n"
+PYFILEDIR_WILDCARD = '#'
 
 POLYPHONE_TABLE = {
     '把': ['ba', 'pa'],
@@ -180,8 +181,6 @@ def get_py(s):
         return s
     if char < b"\xb0\xa1":
         return s
-    if char > b"\xd7\xf9":
-        return "?"
     if char < b"\xb0\xc5":
         return "a"
     if char < b"\xb2\xc1":
@@ -246,6 +245,7 @@ def do_py_match(filename, abbrev):
 
     for i, char in enumerate(abbrev):
         def match():
+            yield char == PYFILEDIR_WILDCARD and ord(filename[i]) > 127
             yield filename[i] == char
             yield get_py(filename[i]) == char
             yield do_polyphone_match(cn_char=filename[i], alpha=char)
