@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import bisect
 import locale
 import os
 import sys
+from collections import OrderedDict
 from functools import lru_cache
 
 PYFILEDIR_CANDIDATE_SEP = "\n"
@@ -174,6 +176,46 @@ def unicode_sort(dirs=[]):
 
 
 @lru_cache(maxsize=1024)
+def get_py2(char):
+    try:
+        char_bytes = char.encode("GB18030")
+    except Exception:
+        return char
+
+    if char_bytes < b"\xb0\xa1" or char_bytes > b"\xd7\xf9":
+        return char
+    table = OrderedDict([
+        ("a", b"\xb0\xc4"),
+        ("b", b"\xb2\xc0"),
+        ("c", b"\xb4\xed"),
+        ("d", b"\xb6\xe9"),
+        ("e", b"\xb7\xa1"),
+        ("f", b"\xb8\xc0"),
+        ("g", b"\xb9\xfd"),
+        ("h", b"\xbb\xf6"),
+        ("j", b"\xbf\xa5"),
+        ("k", b"\xc0\xab"),
+        ("l", b"\xc2\xe7"),
+        ("m", b"\xc4\xc2"),
+        ("n", b"\xc5\xb5"),
+        ("o", b"\xc5\xbd"),
+        ("p", b"\xc6\xd9"),
+        ("q", b"\xc8\xba"),
+        ("r", b"\xc8\xf5"),
+        ("s", b"\xcb\xf9"),
+        ("t", b"\xcd\xd9"),
+        ("w", b"\xce\xf3"),
+        ("x", b"\xd1\xb8"),
+        ("y", b"\xd4\xd0"),
+        ("z", b"\xd7\xf9"),
+    ])
+    keys = list(table.keys())
+    values = list(table.values())
+    ix = bisect.bisect_left(values, char_bytes)
+    return keys[ix]
+
+
+@lru_cache(maxsize=1024)
 def get_py(s):
     try:
         char = s.encode("GB18030")
@@ -247,7 +289,7 @@ def do_py_match(filename, abbrev):
         def match():
             yield char == PYFILEDIR_WILDCARD and ord(filename[i]) > 127
             yield filename[i] == char
-            yield get_py(filename[i]) == char
+            yield get_py2(filename[i]) == char
             yield do_polyphone_match(cn_char=filename[i], alpha=char)
         if not any(match()):
             return False
