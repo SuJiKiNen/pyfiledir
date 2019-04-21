@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
+import bisect
 import locale
 import os
 import sys
+from collections import OrderedDict
 from functools import lru_cache
 
 PYFILEDIR_CANDIDATE_SEP = "\n"
@@ -174,60 +176,43 @@ def unicode_sort(dirs=[]):
 
 
 @lru_cache(maxsize=1024)
-def get_py(s):
+def get_py(char):
     try:
-        char = s.encode("GB18030")
+        char_bytes = char.encode("GB18030")
     except Exception:
-        return s
-    if char < b"\xb0\xa1":
-        return s
-    if char < b"\xb0\xc5":
-        return "a"
-    if char < b"\xb2\xc1":
-        return "b"
-    if char < b"\xb4\xee":
-        return "c"
-    if char < b"\xb6\xea":
-        return "d"
-    if char < b"\xb7\xa2":
-        return "e"
-    if char < b"\xb8\xc1":
-        return "f"
-    if char < b"\xb9\xfe":
-        return "g"
-    if char < b"\xbb\xf7":
-        return "h"
-    if char < b"\xbf\xa6":
-        return "j"
-    if char < b"\xc0\xac":
-        return "k"
-    if char < b"\xc2\xe8":
-        return "l"
-    if char < b"\xc4\xc3":
-        return "m"
-    if char < b"\xc5\xb6":
-        return "n"
-    if char < b"\xc5\xbe":
-        return "o"
-    if char < b"\xc6\xda":
-        return "p"
-    if char < b"\xc8\xbb":
-        return "q"
-    if char < b"\xc8\xf6":
-        return "r"
-    if char < b"\xcb\xfa":
-        return "s"
-    if char < b"\xcd\xda":
-        return "t"
-    if char < b"\xce\xf4":
-        return "w"
-    if char < b"\xd1\xb9":
-        return "x"
-    if char < b"\xd4\xd1":
-        return "y"
-    if char < b"\xd7\xfa":
-        return "z"
-    return s
+        return char
+
+    if char_bytes < b"\xb0\xa1" or char_bytes > b"\xd7\xf9":
+        return char
+    table = OrderedDict([
+        ("a", b"\xb0\xc4"),
+        ("b", b"\xb2\xc0"),
+        ("c", b"\xb4\xed"),
+        ("d", b"\xb6\xe9"),
+        ("e", b"\xb7\xa1"),
+        ("f", b"\xb8\xc0"),
+        ("g", b"\xb9\xfd"),
+        ("h", b"\xbb\xf6"),
+        ("j", b"\xbf\xa5"),
+        ("k", b"\xc0\xab"),
+        ("l", b"\xc2\xe7"),
+        ("m", b"\xc4\xc2"),
+        ("n", b"\xc5\xb5"),
+        ("o", b"\xc5\xbd"),
+        ("p", b"\xc6\xd9"),
+        ("q", b"\xc8\xba"),
+        ("r", b"\xc8\xf5"),
+        ("s", b"\xcb\xf9"),
+        ("t", b"\xcd\xd9"),
+        ("w", b"\xce\xf3"),
+        ("x", b"\xd1\xb8"),
+        ("y", b"\xd4\xd0"),
+        ("z", b"\xd7\xf9"),
+    ])
+    keys = list(table.keys())
+    values = list(table.values())
+    ix = bisect.bisect_left(values, char_bytes)
+    return keys[ix]
 
 
 @lru_cache(maxsize=1024)
