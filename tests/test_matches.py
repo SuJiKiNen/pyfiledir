@@ -1,11 +1,11 @@
 import os
 
 import pytest
-from src.pyfiledir import PYFILEDIR_CANDIDATE_SEP as SEP
 from src.pyfiledir import (
     as_unix_path,
     do_polyphone_match,
     do_py_completion,
+    get_env,
     unicode_sort,
 )
 
@@ -24,6 +24,7 @@ def test_completion_not_expand_tilde(fs):
 
 
 def test_completion_keep_leading_dot_slash(fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     os.environ['HOME'] = '/home/test'
     home_dir = '/home/test'
     fs.create_dir(os.path.join(home_dir, "subdir1"))
@@ -33,6 +34,7 @@ def test_completion_keep_leading_dot_slash(fs):
 
 
 def test_complete_implicit_current_directory(fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     os.environ['HOME'] = '/home/test'
     home_dir = '/home/test'
     fs.create_dir(home_dir)
@@ -46,6 +48,7 @@ def test_complete_implicit_current_directory(fs):
     ([], ["file1", "file2"], "~/", unicode_sort(["file1", "file2"])),
 ])
 def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     home_dir = '/home/test'
     os.environ['HOME'] = home_dir
     for d in dirs:
@@ -74,6 +77,7 @@ def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed,
     ),
 ])
 def test_number_selection(dirs, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -96,6 +100,7 @@ def test_number_selection(dirs, typed, excepted, fs):
     ),
 ])
 def test_number_selection_start_from_one(dirs, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -129,6 +134,7 @@ def test_do_polyphone_match(cn_char, alpha):
     (["/重复"], "/cf", ["/重复"]),
 ])
 def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -138,5 +144,6 @@ def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
     (["/目录"], "/##", ["/目录"]),
 ])
 def test_number_sign_is_unicode_wildcard(dirs, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)

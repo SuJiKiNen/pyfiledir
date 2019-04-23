@@ -7,8 +7,15 @@ import sys
 from collections import OrderedDict
 from functools import lru_cache
 
-PYFILEDIR_CANDIDATE_SEP = "\n"
-PYFILEDIR_WILDCARD = '#'
+DEFAULT_PYFILEDIR_ENVS = {
+    "PYFILEDIR_CANDIDATE_SEP": "\n",
+    "PYFILEDIR_WILDCARD": "#",
+}
+
+
+def get_env(env_name):
+    return os.environ.get(env_name) or DEFAULT_PYFILEDIR_ENVS[env_name]
+
 
 POLYPHONE_TABLE = {
     '把': ['ba', 'pa'],
@@ -230,7 +237,7 @@ def do_py_match(filename, abbrev):
 
     for i, char in enumerate(abbrev):
         def match():
-            yield char == PYFILEDIR_WILDCARD and ord(filename[i]) > 127
+            yield char == get_env("PYFILEDIR_WILDCARD") and ord(filename[i]) > 127
             yield filename[i] == char
             yield get_py(filename[i]) == char
             yield do_polyphone_match(cn_char=filename[i], alpha=char)
@@ -277,7 +284,7 @@ def do_py_completion(path):
 
     ret = [as_unix_path(p) for p in ret]  # post processing path
     ret = unicode_sort(ret)
-    return PYFILEDIR_CANDIDATE_SEP.join(ret[pieces])
+    return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret[pieces])
 
 
 if __name__ == '__main__':
