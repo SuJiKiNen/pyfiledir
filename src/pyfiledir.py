@@ -10,7 +10,12 @@ from functools import lru_cache
 DEFAULT_PYFILEDIR_ENVS = {
     "PYFILEDIR_CANDIDATE_SEP": "\n",
     "PYFILEDIR_WILDCARD": "#",
+    "PYFILEDIR_ADDS_TRAILING_SLASH": "True"
 }
+
+
+def get_truthy_env(name):
+    return str.lower(get_env(name)) not in ("0", "false", "no", "off")
 
 
 def get_env(env_name):
@@ -279,7 +284,14 @@ def do_py_completion(path):
             comp_path = os.path.join(dirname, f)
             ret.append(comp_path)
 
-    if len(ret) == 1 and os.path.isdir(ret[0]) and same_path(ret[0], path):
+    if (
+            len(ret) == 1
+            and os.path.isdir(ret[0])
+            and (
+                get_truthy_env("PYFILEDIR_ADDS_TRAILING_SLASH")
+                or same_path(ret[0], path)
+            )
+    ):
         ret[0] = os.path.join(ret[0], "")  # add trailing slash
 
     ret = [as_unix_path(p) for p in ret]  # post processing path

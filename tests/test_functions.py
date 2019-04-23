@@ -1,8 +1,12 @@
 import os
 
 import pytest
-
-from src.pyfiledir import all_ascii, rsplit_selection, same_path
+from src.pyfiledir import (
+    all_ascii,
+    get_truthy_env,
+    rsplit_selection,
+    same_path,
+)
 
 
 @pytest.mark.parametrize("path,excepted", [
@@ -25,3 +29,21 @@ def test_same_path(fs):
     os.environ['HOME'] = '/home/test'
     home_dir = '/home/test'
     assert same_path(home_dir, "~/")
+
+
+@pytest.mark.parametrize("env_val,excepted", [
+    ("1", True),
+    ("0", False),
+    ("yes", True),
+    ("no", False),
+    ("true", True),
+    ("false", False),
+    ("True", True),
+    ("False", False),
+    ("on", True),
+    ("off", False),
+])
+def test_get_truthy_env(env_val, excepted):
+    key = 'PYFILEDIR_ADDS_TRAILING_SLASH'
+    os.environ[key] = env_val
+    assert get_truthy_env(key) == excepted
