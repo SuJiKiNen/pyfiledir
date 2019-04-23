@@ -143,6 +143,39 @@ for cn_char, pys in POLYPHONE_TABLE.items():
     POLYPHONE_TABLE[cn_char] = [py[0] for py in pys]
 
 
+class CompPath:
+    def __init__(self, path):
+        path, pieces = rsplit_selection(path)
+        self.path = path
+        self.basename = os.path.basename(path)
+        self.dirname = os.path.dirname(path)
+        self.expanded_dirname = os.path.expanduser(self.dirname) or "./"
+
+    def char_range(c1, c2):
+        """Generates the characters from `c1` to `c2`, inclusive."""
+        for c in range(ord(c1), ord(c2)+1):
+            yield chr(c)
+
+    def _rsplit_selection(path):
+        sel = None
+        if (
+                path
+                and not all_ascii(path)
+                and path[-1] in char_range('1', '9')
+        ):
+            sel = int(path[-1])
+            return path[:-1], slice(sel-1, sel, 1)
+        else:
+            return path, slice(None, None, 1)
+
+    def __eq__(self, other):
+        path1 = os.path.expanduser(self.path)
+        path1 = os.path.normpath(self.path)
+        path2 = os.path.expanduser(other.path)
+        path2 = os.path.normpath(other.path)
+        return path1 == path2
+
+
 def char_range(c1, c2):
     """Generates the characters from `c1` to `c2`, inclusive."""
     for c in range(ord(c1), ord(c2)+1):
