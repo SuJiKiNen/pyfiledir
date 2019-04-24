@@ -147,3 +147,23 @@ def test_number_sign_is_unicode_wildcard(dirs, typed, excepted, fs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
+
+
+@pytest.mark.parametrize("dirs,typed,excepted", [
+    (["/test1", "/test2"], "/te", ["/test"]),
+    (["/学习java", "/学习javascript"], "/x", ["/学习java"]),
+    (
+        [
+            "/学习java",
+            "/学习javascript",
+            "/xx"
+        ],
+        "/x",
+        unicode_sort(["/学习java", "/学习javascript", "/xx"]),
+    ),
+])
+def test_complete_common_prefix_first(dirs, typed, excepted, fs):
+    os.environ["PYFILEDIR_COMPLETES_COMMON_PREFIX"] = "1"
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(excepted)

@@ -11,7 +11,8 @@ from functools import lru_cache
 DEFAULT_PYFILEDIR_ENVS = {
     "PYFILEDIR_CANDIDATE_SEP": "\n",
     "PYFILEDIR_WILDCARD": "#",
-    "PYFILEDIR_ADDS_TRAILING_SLASH": "True"
+    "PYFILEDIR_ADDS_TRAILING_SLASH": "True",
+    "PYFILEDIR_COMPLETES_COMMON_PREFIX": "True",
 }
 
 
@@ -284,6 +285,11 @@ def do_py_completion(path):
         if do_py_match(filename=f, abbrev=basename):
             comp_path = os.path.join(dirname, f)
             ret.append(comp_path)
+
+    if len(ret) > 1 and get_truthy_env("PYFILEDIR_COMPLETES_COMMON_PREFIX"):
+        common_prefix = os.path.commonprefix(ret)
+        if len(common_prefix) > len(path):
+            ret = [common_prefix]
 
     if (
             len(ret) == 1
