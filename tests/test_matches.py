@@ -10,7 +10,7 @@ from src.pyfiledir import (
 )
 
 
-def test_completion_not_expand_tilde(fs):
+def test_completion_default_behavior_not_expand_tilde(fs):
     os.environ['HOME'] = '/home/test'
     home_dir = '/home/test'
     fs.create_dir(home_dir)
@@ -21,6 +21,18 @@ def test_completion_not_expand_tilde(fs):
     fs.create_dir(target_dir_expanded)
     fs.create_file(target_file)
     assert do_py_completion("~/c") == target_dir
+
+def test_completion_expand_tidle(fs):
+    os.environ['HOME'] = '/home/test'
+    os.environ['PYFILEDIR_EXPAND_TIDLE'] = "on"
+    home_dir = '/home/test'
+    fs.create_dir(home_dir)
+    target_dir = "~/测试目录"
+    target_dir_expanded = os.path.expanduser(target_dir)
+    target_file = os.path.join(target_dir_expanded, "file")
+    fs.create_dir(target_dir_expanded)
+    fs.create_file(target_file)
+    assert do_py_completion("~/c") == target_dir_expanded
 
 
 def test_completion_keep_leading_dot_slash(fs):

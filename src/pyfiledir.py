@@ -13,6 +13,7 @@ DEFAULT_PYFILEDIR_ENVS = {
     "PYFILEDIR_WILDCARD": "#",
     "PYFILEDIR_ADDS_TRAILING_SLASH": "True",
     "PYFILEDIR_COMPLETES_COMMON_PREFIX": "True",
+    "PYFILEDIR_EXPAND_TIDLE": "False",
 }
 
 
@@ -280,6 +281,8 @@ def do_py_completion(path):
     except Exception:
         sys.exit(0)
 
+    if get_truthy_env("PYFILEDIR_EXPAND_TIDLE"):
+        dirname = os.path.expanduser(dirname)
     ret = []
     for f in files:
         if do_py_match(filename=f, abbrev=basename):
