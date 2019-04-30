@@ -1,0 +1,8 @@
+* environment variables
+  | environment variable name        | default value | explanation                                |
+  |----------------------------------+---------------+--------------------------------------------|
+  | PYFILEDIR_CANDIDATE_SEP          | =\n=          | how pyfiledir join candidates              |
+  | PYFILEDIR_WILDCARD               | =#=           | wildcard match charactor for dir or file   |
+  | PYFILEDIR_ADD_TRAILING_SLASH     | =True=        | add trailing slash for directory candidate |
+  | PYFILEDIR_COMPLETE_COMMON_PREFIX | =True=        | complete common prefix of candidates first |
+  | PYFILEDIR_EXPAND_TIDLE           | =False=       | expand =~= to =/home/<user>=               |
