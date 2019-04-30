@@ -175,7 +175,7 @@ def test_number_sign_is_unicode_wildcard(dirs, typed, excepted, fs):
     ),
 ])
 def test_complete_common_prefix_first(dirs, typed, excepted, fs):
-    os.environ["PYFILEDIR_COMPLETES_COMMON_PREFIX"] = "1"
+    os.environ["PYFILEDIR_COMPLETE_COMMON_PREFIX"] = "1"
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)

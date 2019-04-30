@@ -44,6 +44,6 @@ def test_same_path(fs):
     ("off", False),
 ])
 def test_get_truthy_env(env_val, excepted):
-    key = 'PYFILEDIR_ADDS_TRAILING_SLASH'
+    key = 'PYFILEDIR_ADD_TRAILING_SLASH'
     os.environ[key] = env_val
     assert get_truthy_env(key) == excepted
