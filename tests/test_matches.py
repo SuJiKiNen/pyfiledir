@@ -11,10 +11,7 @@ from src.pyfiledir import (
 )
 
 
-def test_completion_default_behavior_not_expand_tilde(fs):
-    os.environ['HOME'] = '/home/test'
-    home_dir = '/home/test'
-    fs.create_dir(home_dir)
+def test_completion_default_behavior_not_expand_tilde(fs, test_home_dir):
 
     target_dir = "~/测试目录"
     target_dir_expanded = os.path.expanduser(target_dir)
@@ -30,10 +27,7 @@ def test_completion_default_behavior_not_expand_tilde(fs):
         "PYFILEDIR_EXPAND_TIDLE": "on",
     },
 )
-def test_completion_expand_tidle(fs):
-    os.environ['HOME'] = '/home/test'
-    home_dir = '/home/test'
-    fs.create_dir(home_dir)
+def test_completion_expand_tidle(fs, test_home_dir):
     target_dir = "~/测试目录"
     target_dir_expanded = os.path.expanduser(target_dir)
     target_file = os.path.join(target_dir_expanded, "file")
@@ -42,21 +36,16 @@ def test_completion_expand_tidle(fs):
     assert do_py_completion("~/c") == target_dir_expanded
 
 
-def test_completion_keep_leading_dot_slash(fs):
+def test_completion_keep_leading_dot_slash(fs, test_home_dir):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
-    os.environ['HOME'] = '/home/test'
-    home_dir = '/home/test'
-    fs.create_dir(os.path.join(home_dir, "subdir1"))
-    fs.create_dir(os.path.join(home_dir, "subdir2"))
-    os.chdir(home_dir)
+    fs.create_dir(os.path.join(test_home_dir, "subdir1"))
+    fs.create_dir(os.path.join(test_home_dir, "subdir2"))
+    os.chdir(test_home_dir)
     assert do_py_completion("./") == SEP.join(["./subdir1", "./subdir2"])
 
 
-def test_complete_implicit_current_directory(fs):
+def test_complete_implicit_current_directory(fs, test_home_dir):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
-    os.environ['HOME'] = '/home/test'
-    home_dir = '/home/test'
-    fs.create_dir(home_dir)
     os.chdir("/home")
     assert do_py_completion("t") == SEP.join(["test"])
 
@@ -66,14 +55,12 @@ def test_complete_implicit_current_directory(fs):
     (["subdir1", "subdir2"], [], "~/", unicode_sort(["subdir1", "subdir2"])),
     ([], ["file1", "file2"], "~/", unicode_sort(["file1", "file2"])),
 ])
-def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs):
+def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs, test_home_dir):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
-    home_dir = '/home/test'
-    os.environ['HOME'] = home_dir
     for d in dirs:
-        fs.create_dir(os.path.join(home_dir, d))
+        fs.create_dir(os.path.join(test_home_dir, d))
     for f in files:
-        fs.create_file(os.path.join(home_dir, f))
+        fs.create_file(os.path.join(test_home_dir, f))
     excepted = [as_unix_path(os.path.join("~/", f)) for f in excepted]
     assert do_py_completion(typed) == SEP.join(excepted)
 

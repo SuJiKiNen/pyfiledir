@@ -25,10 +25,8 @@ def test_isascii(path, excepted):
     assert all_ascii(path) == excepted
 
 
-def test_same_path(fs):
-    os.environ['HOME'] = '/home/test'
-    home_dir = '/home/test'
-    assert same_path(home_dir, "~/")
+def test_same_path(fs, test_home_dir):
+    assert same_path(test_home_dir, "~/")
 
 
 @pytest.mark.parametrize("env_val,excepted", [
