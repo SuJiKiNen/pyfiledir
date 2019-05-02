@@ -1,4 +1,5 @@
 import os
+from unittest.mock import patch
 
 import pytest
 from src.pyfiledir import (
@@ -22,9 +23,15 @@ def test_completion_default_behavior_not_expand_tilde(fs):
     fs.create_file(target_file)
     assert do_py_completion("~/c") == target_dir
 
+
+@patch.dict(
+    os.environ,
+    {
+        "PYFILEDIR_EXPAND_TIDLE": "on",
+    },
+)
 def test_completion_expand_tidle(fs):
     os.environ['HOME'] = '/home/test'
-    os.environ['PYFILEDIR_EXPAND_TIDLE'] = "on"
     home_dir = '/home/test'
     fs.create_dir(home_dir)
     target_dir = "~/测试目录"
@@ -174,8 +181,13 @@ def test_number_sign_is_unicode_wildcard(dirs, typed, excepted, fs):
         unicode_sort(["/学习java", "/学习javascript", "/xx"]),
     ),
 ])
+@patch.dict(
+    os.environ,
+    {
+        "PYFILEDIR_COMPLETE_COMMON_PREFIX": "1",
+    },
+)
 def test_complete_common_prefix_first(dirs, typed, excepted, fs):
-    os.environ["PYFILEDIR_COMPLETE_COMMON_PREFIX"] = "1"
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
