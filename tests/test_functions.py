@@ -3,7 +3,10 @@ import os
 import pytest
 from src.pyfiledir import (
     all_ascii,
+    do_py_completion,
+    get_py,
     get_truthy_env,
+    main,
     rsplit_selection,
     same_path,
 )
@@ -29,6 +32,19 @@ def test_same_path(fs, test_home_dir):
     assert same_path(test_home_dir, "~/")
 
 
+@pytest.mark.parametrize(
+    "char, excepted",
+    ([
+        ("a", "a"),
+        ("1", "1"),
+        ("好", "h"),
+        ("あ", "あ"),  # b'\xa4\xa2'
+    ]),
+)
+def test_get_py(char, excepted):
+    assert get_py(char) == excepted
+
+
 @pytest.mark.parametrize("env_val,excepted", [
     ("1", True),
     ("0", False),
@@ -45,3 +61,20 @@ def test_get_truthy_env(env_val, excepted):
     key = 'PYFILEDIR_ADD_TRAILING_SLASH'
     os.environ[key] = env_val
     assert get_truthy_env(key) == excepted
+
+
+def test_do_py_completion_on_not_exists_path():
+    with pytest.raises(SystemExit):
+        do_py_completion("/not_exists_path/file")
+
+
+@pytest.mark.parametrize("files,typed", [
+    (["abc"], "abc"),
+    (["arise", "are"], "a"),
+])
+def test_main_function(fs, test_home_dir, files, typed, capsys):
+    os.chdir(test_home_dir)
+    [fs.create_file(f) for f in files]
+    main(["pyfiledir", typed])
+    out, err = capsys.readouterr()
+    assert any(f in out for f in files)

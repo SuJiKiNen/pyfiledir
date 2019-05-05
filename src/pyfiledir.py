@@ -197,7 +197,7 @@ def get_py(char):
     except Exception:
         return char
 
-    if char_bytes < b"\xb0\xa1" or char_bytes > b"\xd7\xf9":
+    if not (b"\xb0\xa1" <= char_bytes <= b"\xd7\xf9"):
         return char
     table = OrderedDict([
         ("a", b"\xb0\xc4"),
@@ -309,6 +309,10 @@ def do_py_completion(path):
     return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret[pieces])
 
 
+def main(argv):
+    if len(argv) >= 2:
+        print(do_py_completion(path=argv[1]), end="")
+
+
 if __name__ == '__main__':
-    if len(sys.argv) >= 2:
-        print(do_py_completion(path=sys.argv[1]), end="")
+    sys.exit(main(sys.argv))
