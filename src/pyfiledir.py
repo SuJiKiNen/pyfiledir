@@ -14,6 +14,7 @@ DEFAULT_PYFILEDIR_ENVS = {
     "PYFILEDIR_ADD_TRAILING_SLASH": "True",
     "PYFILEDIR_COMPLETE_COMMON_PREFIX": "True",
     "PYFILEDIR_EXPAND_TIDLE": "False",
+    "PYFILEDIR_IGNORE_CASE": "False",
 }
 
 
@@ -266,6 +267,12 @@ def as_unix_path(path):
     return path.replace(os.path.sep, "/")
 
 
+def pre_handler(f):
+    if get_truthy_env("PYFILEDIR_IGNORE_CASE"):
+        return f.lower()
+    return f
+
+
 def do_py_completion(path):
 
     path, pieces = rsplit_selection(path)
@@ -285,7 +292,7 @@ def do_py_completion(path):
         dirname = os.path.expanduser(dirname)
     ret = []
     for f in files:
-        if do_py_match(filename=f, abbrev=basename):
+        if do_py_match(filename=pre_handler(f), abbrev=basename):
             comp_path = os.path.join(dirname, f)
             ret.append(comp_path)
 

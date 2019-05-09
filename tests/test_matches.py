@@ -178,3 +178,19 @@ def test_complete_common_prefix_first(dirs, typed, excepted, fs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
+
+
+@pytest.mark.parametrize("dirs,typed,excepted", [
+    (["/Test1", "/TEST2"], "/te", unicode_sort(["/Test1", "/TEST2"])),
+])
+@patch.dict(
+    os.environ,
+    {
+        "PYFILEDIR_COMPLETE_COMMON_PREFIX": "off",
+        "PYFILEDIR_IGNORE_CASE": "yes",
+    },
+)
+def test_candidates_ignore_case(dirs, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(excepted)

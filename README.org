@@ -6,3 +6,4 @@
   | PYFILEDIR_ADD_TRAILING_SLASH     | =True=        | add trailing slash for directory candidate |
   | PYFILEDIR_COMPLETE_COMMON_PREFIX | =True=        | complete common prefix of candidates first |
   | PYFILEDIR_EXPAND_TIDLE           | =False=       | expand =~= to =/home/<user>=               |
+  | PYFILEDIR_IGNORE_CASE            | =False=       | completion ignore case                     |
