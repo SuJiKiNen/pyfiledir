@@ -1,0 +1,27 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.0.0
+    hooks:
+      - id: flake8
+      - id: debug-statements
+      - id: check-merge-conflict
+      - id: check-docstring-first
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: check-yaml
+-   repo: https://github.com/asottile/add-trailing-comma
+    rev: v0.7.1
+    hooks:
+      - id: add-trailing-comma
+-   repo: https://github.com/pre-commit/mirrors-isort
+    rev: v4.3.4
+    hooks:
+    -   id: isort
+-   repo: local
+    hooks:
+      - id: reqs
+        name: requirements
+        description: generate requirements file from Pipfile.
+        entry: bash -c "pipenv lock -d -r > requirements-dev.txt"
+        language: system
+        pass_filenames: false

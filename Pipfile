@@ -10,6 +10,7 @@ pytest = {index = "http://pypi.douban.com/simple/",version = "*"}
 pyfakefs = {index = "http://pypi.douban.com/simple/",version = "*"}
 ipython = {index = "http://pypi.douban.com/simple/",version = "*"}
 pytest-cov = {index = "http://pypi.douban.com/simple/",version = "*"}
+pre-commit = {index = "http://pypi.douban.com/simple/",version = "*"}
 
 [packages]
 
