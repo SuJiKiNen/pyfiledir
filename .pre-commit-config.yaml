@@ -19,9 +19,15 @@ repos:
     -   id: isort
 -   repo: local
     hooks:
-      - id: reqs
+      - id: requirements
         name: requirements
         description: generate requirements file from Pipfile.
         entry: bash -c "pipenv lock -d -r > requirements-dev.txt"
+        language: system
+        pass_filenames: false
+      - id: dockerignore
+        name: requirements
+        description: generate .dockerignore file from .gitignore.
+        entry: bash -c "gitignore-to-dockerignore"
         language: system
         pass_filenames: false
