@@ -1,12 +1,12 @@
 import os
 
 import pytest
+from src.__main__ import main
 from src.pyfiledir import (
     all_ascii,
     do_py_completion,
     get_py,
     get_truthy_env,
-    main,
     rsplit_selection,
     same_path,
 )
