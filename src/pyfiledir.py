@@ -6,16 +6,32 @@ import locale
 import os
 import sys
 from collections import OrderedDict
+from enum import Enum
 from functools import lru_cache
 
-DEFAULT_PYFILEDIR_ENVS = {
-    "PYFILEDIR_CANDIDATE_SEP": "\n",
-    "PYFILEDIR_WILDCARD": "#",
-    "PYFILEDIR_ADD_TRAILING_SLASH": "True",
-    "PYFILEDIR_COMPLETE_COMMON_PREFIX": "True",
-    "PYFILEDIR_EXPAND_TIDLE": "False",
-    "PYFILEDIR_IGNORE_CASE": "False",
-}
+
+class DEFAULT_PYFILEDIR_ENVS(Enum):
+
+    PYFILEDIR_CANDIDATE_SEP = ("\n", "how pyfiledir join candidates")
+    PYFILEDIR_WILDCARD = ("#", "wildcard match charactor for dir or file")
+    PYFILEDIR_ADD_TRAILING_SLASH = ("True", "add trailing slash for directory candidate")
+    PYFILEDIR_COMPLETE_COMMON_PREFIX = ("True", "complete common prefix of candidates first")
+    PYFILEDIR_EXPAND_TIDLE = ("False", "expand =~= to =/home/<user>=")
+    PYFILEDIR_IGNORE_CASE = ("False", "completion ignore case")
+
+    @classmethod
+    def items(cls):
+        return cls.__members__.items()
+
+    def __str__(self):
+        return self.value[0]
+
+    def __hash__(self, other):
+        return self.value[0] == other.value[0]
+
+    @property
+    def docstring(self):
+        return self.value[1]
 
 
 def get_truthy_env(name):

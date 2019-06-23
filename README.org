@@ -1,5 +1,18 @@
-* environment variables
-  | environment variable name        | default value | explanation                                |
+* Environment Variables
+  #+BEGIN_SRC python :exports results :output table
+
+    from src.pyfiledir import DEFAULT_PYFILEDIR_ENVS
+    results = []
+    header = ["Environment variable name", "Default value", "Explanation"]
+    results.append(header)
+    results.append(None)
+    for key, val in DEFAULT_PYFILEDIR_ENVS.__members__.items():
+        results.append([key, "={}=".format(val), val.docstring])
+    return results
+  #+END_SRC
+
+  #+RESULTS:
+  | Environment variable name        | Default value | Explanation                                |
   |----------------------------------+---------------+--------------------------------------------|
   | PYFILEDIR_CANDIDATE_SEP          | =\n=          | how pyfiledir join candidates              |
   | PYFILEDIR_WILDCARD               | =#=           | wildcard match charactor for dir or file   |
