@@ -1,8 +1,8 @@
 import os
 
 import pytest
-from src.__main__ import main
-from src.pyfiledir import (
+from pyfiledir.__main__ import main
+from pyfiledir.pyfiledir import (
     all_ascii,
     do_py_completion,
     get_py,
@@ -46,7 +46,7 @@ def test_same_path(fs, test_home_dir):
     ]),
 )
 def test_get_py(char, excepted):
-    assert get_py(char) == excepted
+    assert excepted in get_py(char)
 
 
 @pytest.mark.parametrize(

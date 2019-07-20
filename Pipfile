@@ -11,6 +11,9 @@ pyfakefs = {index = "http://pypi.douban.com/simple/",version = "*"}
 ipython = {index = "http://pypi.douban.com/simple/",version = "*"}
 pytest-cov = {index = "http://pypi.douban.com/simple/",version = "*"}
 pre-commit = {index = "http://pypi.douban.com/simple/",version = "*"}
+pandas = {index = "http://pypi.douban.com/simple/",version = "*"}
+jupyterlab = {index = "http://pypi.douban.com/simple/",version = "*"}
+hypothesis = {index = "http://pypi.douban.com/simple/",version = "*"}
 
 [packages]
 

@@ -2,7 +2,7 @@ import os
 from unittest.mock import patch
 
 import pytest
-from src.pyfiledir import (
+from pyfiledir.pyfiledir import (
     as_unix_path,
     do_polyphone_match,
     do_py_completion,
@@ -207,6 +207,25 @@ def test_complete_common_prefix_first(dirs, typed, excepted, fs):
     },
 )
 def test_candidates_ignore_case(dirs, typed, excepted, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == SEP.join(excepted)
+
+
+@pytest.mark.parametrize(
+    "dirs,typed,excepted", [
+        (["/㔿"], "/z", unicode_sort(["/㔿"])),  # zou
+    ],
+)
+@patch.dict(
+    os.environ,
+    {
+        "PYFILEDIR_COMPLETE_COMMON_PREFIX": "off",
+        "PYFILEDIR_IGNORE_CASE": "yes",
+        "PYFILEDIR_USE_UNIHAN_DICT": "1",
+    },
+)
+def test_use_rich_unihan_dict_works(dirs, typed, excepted, fs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)

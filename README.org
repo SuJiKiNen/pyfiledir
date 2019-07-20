@@ -1,7 +1,7 @@
 * Environment Variables
   #+BEGIN_SRC python :exports results :output table
 
-    from src.pyfiledir import DEFAULT_PYFILEDIR_ENVS
+    from pyfiledir.pyfiledir import DEFAULT_PYFILEDIR_ENVS
     results = []
     header = ["Environment variable name", "Default value", "Explanation"]
     results.append(header)
@@ -20,3 +20,4 @@
   | PYFILEDIR_COMPLETE_COMMON_PREFIX | =True=        | complete common prefix of candidates first |
   | PYFILEDIR_EXPAND_TIDLE           | =False=       | expand =~= to =/home/<user>=               |
   | PYFILEDIR_IGNORE_CASE            | =False=       | completion ignore case                     |
+  | PYFILEDIR_USE_UNIHAN_DICT        | =False=       | use rich Unihan dict                       |
