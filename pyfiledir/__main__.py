@@ -21,7 +21,11 @@ fi
 # exitcode 2: Missing keyword or command, or permission problem
 exit 2
 ':'''
+import os
 import sys
+
+ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+sys.path.append(os.path.join(ROOT_DIR, "pyfiledir"))
 
 if __package__ is None or __package__ == '':
     # executed directly
