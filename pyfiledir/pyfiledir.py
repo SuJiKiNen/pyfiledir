@@ -223,9 +223,7 @@ def get_py(char, _encoding="GB2312"):
     """
 
     if get_truthy_env("PYFILEDIR_USE_UNIHAN_DICT"):
-        dict_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "py_dict.py")
-        sys.path.append(os.path.dirname(os.path.expanduser(dict_file)))
-        from py_dict import PY_DICT
+        from pyfiledir.py_dict import PY_DICT
         if char in PY_DICT.keys():
             return [pinyin[0] for pinyin in PY_DICT[char]]
         else:

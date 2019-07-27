@@ -25,6 +25,7 @@ import os
 import sys
 
 ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+ROOT_DIR = os.path.expanduser(ROOT_DIR)
 sys.path.append(os.path.join(ROOT_DIR, "pyfiledir"))
 
 if __package__ is None or __package__ == '':
