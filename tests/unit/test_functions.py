@@ -1,8 +1,9 @@
 import os
 
 import pytest
+
 from pyfiledir.__main__ import main
-from pyfiledir.pyfiledir import (
+from pyfiledir.py_core import (
     all_ascii,
     do_py_completion,
     get_py,

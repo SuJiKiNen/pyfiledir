@@ -2,7 +2,8 @@ import os
 from unittest.mock import patch
 
 import pytest
-from pyfiledir.pyfiledir import (
+
+from pyfiledir.py_core import (
     as_unix_path,
     do_polyphone_match,
     do_py_completion,

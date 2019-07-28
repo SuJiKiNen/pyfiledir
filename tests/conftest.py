@@ -1,5 +1,6 @@
 import pytest
-from pyfiledir.pyfiledir import DEFAULT_PYFILEDIR_ENVS
+
+from pyfiledir.py_core import DEFAULT_PYFILEDIR_ENVS
 
 
 @pytest.fixture(scope="session")
