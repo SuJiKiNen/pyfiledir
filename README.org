@@ -17,7 +17,9 @@
   | PYFILEDIR_CANDIDATE_SEP          | =\n=          | how pyfiledir join candidates              |
   | PYFILEDIR_WILDCARD               | =#=           | wildcard match charactor for dir or file   |
   | PYFILEDIR_ADD_TRAILING_SLASH     | =True=        | add trailing slash for directory candidate |
+  | PYFILEDIR_KEEP_LEADING_DOT_SLASH | =True=        | keep leading ./ in path                    |
   | PYFILEDIR_COMPLETE_COMMON_PREFIX | =True=        | complete common prefix of candidates first |
   | PYFILEDIR_EXPAND_TIDLE           | =False=       | expand =~= to =/home/<user>=               |
   | PYFILEDIR_IGNORE_CASE            | =False=       | completion ignore case                     |
   | PYFILEDIR_USE_UNIHAN_DICT        | =False=       | use rich Unihan dict                       |
+  | PYFILEDIR_USE_NATURAL_SORT       | =False=       | use natural sort, sorting filenames        |

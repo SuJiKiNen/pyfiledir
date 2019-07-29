@@ -14,6 +14,7 @@ pre-commit = {index = "http://pypi.douban.com/simple/",version = "*"}
 pandas = {index = "http://pypi.douban.com/simple/",version = "*"}
 jupyterlab = {index = "http://pypi.douban.com/simple/",version = "*"}
 hypothesis = {index = "http://pypi.douban.com/simple/",version = "*"}
+isort = {index = "http://pypi.douban.com/simple/",version = "*"}
 
 [packages]
 

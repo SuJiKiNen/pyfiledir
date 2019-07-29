@@ -1,3 +1,7 @@
+env:
+  global:
+    - HYPOTHESIS_PROFILE=ci
+
 language: python
 matrix:
   include:

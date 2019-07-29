@@ -30,10 +30,12 @@ class DEFAULT_PYFILEDIR_ENVS(Enum):
     PYFILEDIR_CANDIDATE_SEP = ("\n", "how pyfiledir join candidates")
     PYFILEDIR_WILDCARD = ("#", "wildcard match charactor for dir or file")
     PYFILEDIR_ADD_TRAILING_SLASH = ("True", "add trailing slash for directory candidate")
+    PYFILEDIR_KEEP_LEADING_DOT_SLASH = ("True", "keep leading ./ in path")
     PYFILEDIR_COMPLETE_COMMON_PREFIX = ("True", "complete common prefix of candidates first")
     PYFILEDIR_EXPAND_TIDLE = ("False", "expand =~= to =/home/<user>=")
     PYFILEDIR_IGNORE_CASE = ("False", "completion ignore case")
     PYFILEDIR_USE_UNIHAN_DICT = ("False", "use rich Unihan dict")
+    PYFILEDIR_USE_NATURAL_SORT = ("False", "use natural sort, sorting filenames")
 
     @classmethod
     def items(cls):
@@ -68,6 +70,7 @@ def rsplit_selection(path):
     sel = None
     if (
             path
+            and len(path) > 1
             and not all_ascii(path)
             and path[-1] in char_range('1', '9')
     ):
@@ -88,6 +91,24 @@ def all_ascii(path):
 def unicode_sort(dirs=[]):
     locale.setlocale(locale.LC_ALL, "")
     return sorted(dirs, key=locale.strxfrm)
+
+
+def try_cast_int(s):
+    try:
+        return int(s)
+    except ValueError:
+        return s
+
+
+def natural_sort_key(s):
+    import re
+    num_list = re.findall(r'\d+', s)
+    num_list = map(try_cast_int, num_list)
+    return tuple(num_list)
+
+
+def natural_sort(l):
+    return sorted(l, key=natural_sort_key)
 
 
 @lru_cache(maxsize=1024)
@@ -201,9 +222,13 @@ def do_py_completion(path):
     if get_truthy_env("PYFILEDIR_EXPAND_TIDLE"):
         dirname = os.path.expanduser(dirname)
     ret = []
+
+    keep_dot_slash = get_truthy_env("PYFILEDIR_KEEP_LEADING_DOT_SLASH")
     for f in files:
         if do_py_match(filename=pre_handler(f), abbrev=basename):
             comp_path = os.path.join(dirname, f)
+            if not keep_dot_slash:
+                comp_path = os.path.normpath(comp_path)
             ret.append(comp_path)
 
     if len(ret) > 1 and get_truthy_env("PYFILEDIR_COMPLETE_COMMON_PREFIX"):
@@ -222,5 +247,8 @@ def do_py_completion(path):
         ret[0] = os.path.join(ret[0], "")  # add trailing slash
 
     ret = [as_unix_path(p) for p in ret]  # post processing path
-    ret = unicode_sort(ret)
+    if get_truthy_env("PYFILEDIR_USE_NATURAL_SORT"):
+        ret = natural_sort(ret)
+    else:
+        ret = unicode_sort(ret)
     return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret[pieces])

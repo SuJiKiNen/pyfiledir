@@ -1,7 +1,10 @@
+import glob
 import os
+import shutil
 from unittest.mock import patch
 
 import pytest
+from hypothesis import given
 
 from pyfiledir.py_core import (
     as_unix_path,
@@ -10,6 +13,7 @@ from pyfiledir.py_core import (
     get_env,
     unicode_sort,
 )
+from utils import file_sequence_strategy
 
 
 def test_completion_default_behavior_not_expand_tilde(fs, test_home_dir):
@@ -230,3 +234,27 @@ def test_use_rich_unihan_dict_works(dirs, typed, excepted, fs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
+
+
+@patch.dict(
+    os.environ,
+    {
+        "PYFILEDIR_COMPLETE_COMMON_PREFIX": "off",
+        "PYFILEDIR_USE_NATURAL_SORT": "1",
+        "PYFILEDIR_KEEP_LEADING_DOT_SLASH": "0",
+    },
+)
+@given(file_seqs=file_sequence_strategy())
+def test_natural_sort_completion_results(file_seqs, fs):
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    # clean up fs files,hypothesis don't work well with fixture,
+    # it reuse fixtrue through every example
+    files = glob.glob('/*')
+    for f in files:
+        if os.path.isfile(f):
+            os.unlink(f)
+        elif os.path.isdir(f):
+            shutil.rmtree(f)
+    for f in file_seqs:
+        fs.create_file(f)
+    assert do_py_completion("./") == SEP.join(file_seqs)

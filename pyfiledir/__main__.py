@@ -30,7 +30,7 @@ sys.path.append(os.path.join(ROOT_DIR, "pyfiledir"))
 
 if __package__ is None or __package__ == '':
     # executed directly
-    from pyfiledir import do_py_completion
+    from py_core import do_py_completion
 else:
     # imported as a package
     from pyfiledir.py_core import do_py_completion
