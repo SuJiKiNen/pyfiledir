@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+_PYFILEDIR_PATH=$(printf "%s" "${BASH_SOURCE[0]}" | xargs dirname | xargs dirname)
+_PYFILEDIR_PATH="$_PYFILEDIR_PATH""/pyfiledir"
+PYTHONPATH="$PYTHONPATH":"$_PYFILEDIR_PATH"
+unset _PYFILEDIR_PATH
 
 _pinyin_abbrev_completion() {
     # use printf to handle space,parentheses etc in filename properly
