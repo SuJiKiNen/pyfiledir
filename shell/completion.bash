@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
-_PYFILEDIR_PATH=$(printf "%s" "${BASH_SOURCE[0]}" | xargs dirname | xargs dirname)
-_PYFILEDIR_PATH="$_PYFILEDIR_PATH""/pyfiledir"
-PYTHONPATH="$PYTHONPATH":"$_PYFILEDIR_PATH"
-unset _PYFILEDIR_PATH
+_pyfiledir_setup_pythonpath(){
+    _PYFILEDIR_PATH="$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" || return; pwd -P )"
+    PYTHONPATH=$PYTHONPATH:$_PYFILEDIR_PATH
+    export PYTHONPATH
+    unset _PYFILEDIR_PATH
+}
+_pyfiledir_setup_pythonpath
 
-_pinyin_abbrev_completion() {
+_pyfiledir_completion() {
     # use printf to handle space,parentheses etc in filename properly
     # see https://stackoverflow.com/questions/1146098/properly-handling-spaces-and-quotes-in-bash-completion
     local IFS
@@ -38,5 +41,5 @@ _pinyin_abbrev_completion() {
 }
 
 if [[ -n "$BASH_VERSION" ]]; then
-    complete -o "nospace" -o "bashdefault" -o "default" -F _pinyin_abbrev_completion ls cd cat
+    complete -o "nospace" -o "bashdefault" -o "default" -F _pyfiledir_completion ls cd cat
 fi
