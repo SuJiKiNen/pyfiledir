@@ -23,3 +23,10 @@
   | PYFILEDIR_IGNORE_CASE            | =False=       | completion ignore case                     |
   | PYFILEDIR_USE_UNIHAN_DICT        | =False=       | use rich Unihan dict                       |
   | PYFILEDIR_USE_NATURAL_SORT       | =False=       | use natural sort, sorting filenames        |
+
+* Development Guide
+** Profiling
+   requirements: =python 3.7=
+   #+BEGIN_SRC shell
+     python -m cProfile -m pyfiledir [option] <arg>
+   #+END_SRC
