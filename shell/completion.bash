@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 _pyfiledir_setup_pythonpath(){
     _PYFILEDIR_PATH="$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" || return; pwd -P )"
-    PYTHONPATH=$PYTHONPATH:$_PYFILEDIR_PATH
+    #----------|-if PYTHONPATH not empty add leading colon |
+    PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}$_PYFILEDIR_PATH
     export PYTHONPATH
     unset _PYFILEDIR_PATH
 }
