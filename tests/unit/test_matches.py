@@ -1,10 +1,9 @@
-import glob
 import os
-import shutil
 from unittest.mock import patch
 
 import pytest
 from hypothesis import given
+from pyfakefs.fake_filesystem_unittest import Patcher
 
 from pyfiledir.py_core import (
     as_unix_path,
@@ -245,16 +244,17 @@ def test_use_rich_unihan_dict_works(dirs, typed, excepted, fs):
     },
 )
 @given(file_seqs=file_sequence_strategy())
-def test_natural_sort_completion_results(file_seqs, fs):
+def test_natural_sort_completion_results(file_seqs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
-    # clean up fs files,hypothesis don't work well with fixture,
+    # hypothesis don't work well with fixture,
     # it reuse fixtrue through every example
-    files = glob.glob('/*')
-    for f in files:
-        if os.path.isfile(f):
-            os.unlink(f)
-        elif os.path.isdir(f):
-            shutil.rmtree(f)
-    for f in file_seqs:
-        fs.create_file(f)
-    assert do_py_completion("./") == SEP.join(file_seqs)
+    # setup up and teardwon pyfakefs patch manually
+    with Patcher(modules_to_reload=[do_py_completion]) as patcher:
+        # access the fake_filesystem object via patcher.fs
+        prefix = "/home/test/"
+        os.makedirs(prefix)
+        os.chdir(prefix)
+        for f in file_seqs:
+            patcher.fs.create_file(f)
+
+        do_py_completion("./") == SEP.join(file_seqs)
