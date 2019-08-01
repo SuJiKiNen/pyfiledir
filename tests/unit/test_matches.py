@@ -3,7 +3,7 @@ import tempfile
 from unittest.mock import patch
 
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from pyfiledir.py_core import (
@@ -245,6 +245,7 @@ def test_use_rich_unihan_dict_works(dirs, typed, excepted, fs):
     },
 )
 @given(file_seqs=file_sequence_strategy())
+@settings(max_examples=32)
 def test_natural_sort_completion_results(file_seqs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     # hypothesis don't work well with fixture,
