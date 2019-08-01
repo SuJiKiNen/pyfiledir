@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
 _pyfiledir_setup_pythonpath(){
     _PYFILEDIR_PATH="$(cd "$(dirname "$(dirname "${BASH_SOURCE[0]}")")" || return; pwd -P )"
-    #----------|-if PYTHONPATH not empty add leading colon |
-    PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}$_PYFILEDIR_PATH
+    if [ "$OSTYPE" = "msys" ]; then
+        PYTHONPATH=${PYTHONPATH:+${PYTHONPATH};}$_PYFILEDIR_PATH
+    else
+        #----------|-if PYTHONPATH not empty add leading colon |
+        PYTHONPATH=${PYTHONPATH:+${PYTHONPATH}:}$_PYFILEDIR_PATH
+    fi
     export PYTHONPATH
     unset _PYFILEDIR_PATH
 }
@@ -18,14 +22,14 @@ _pyfiledir_completion() {
     IFS=$'\n'
     cur="${COMP_WORDS[COMP_CWORD]}"
     cur=$(eval printf '%s' "$cur") # unquote current input
-    if [ "$OSTYPE" = "*msys*" ] && command -v dos2unix >/dev/null 2>&1; then
+    if [ "$OSTYPE" = "msys" ] && command -v dos2unix >/dev/null 2>&1; then
         words=$(pyfiledir "$cur" | dos2unix)
     else
         words=$(pyfiledir "$cur")
     fi
     words=($(compgen -W "${words[*]}"))
 
-    if [ "$OSTYPE" = "*msys*" ] && command -v cygpath > /dev/null 2>&1; then
+    if [ "$OSTYPE" = "msys" ] && command -v cygpath > /dev/null 2>&1; then
         # convert Windows style path to Unix One
         # like D:\ => /d/
         for ix in "${!words[@]}"; do
