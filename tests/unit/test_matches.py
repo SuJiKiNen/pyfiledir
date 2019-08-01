@@ -1,4 +1,5 @@
 import os
+import tempfile
 from unittest.mock import patch
 
 import pytest
@@ -251,8 +252,7 @@ def test_natural_sort_completion_results(file_seqs):
     # setup up and teardwon pyfakefs patch manually
     with Patcher(modules_to_reload=[do_py_completion]) as patcher:
         # access the fake_filesystem object via patcher.fs
-        prefix = "/home/test/"
-        os.makedirs(prefix)
+        prefix = tempfile.gettempdir()
         os.chdir(prefix)
         for f in file_seqs:
             patcher.fs.create_file(f)
