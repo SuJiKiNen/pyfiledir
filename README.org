@@ -1,3 +1,6 @@
+[[https://travis-ci.com/SuJiKiNen/bash-pinyin-abbrev-completion.svg?token=SyYBkLSsqdq7EysyHysJ&branch=master]]
+
+
 * Environment Variables
   #+BEGIN_SRC python :exports results :output table
 
