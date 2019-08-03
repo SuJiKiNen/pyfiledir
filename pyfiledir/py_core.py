@@ -195,6 +195,7 @@ def same_path(path1, path2):
 
 
 def as_unix_path(path):
+    path = str(path)
     return path.replace(os.path.sep, "/")
 
 

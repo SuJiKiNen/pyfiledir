@@ -1,5 +1,6 @@
 import os
 import tempfile
+from pathlib import Path
 from unittest.mock import patch
 
 import pytest
@@ -20,7 +21,7 @@ def test_completion_default_behavior_not_expand_tilde(fs, test_home_dir):
 
     target_dir = "~/测试目录"
     target_dir_expanded = os.path.expanduser(target_dir)
-    target_file = os.path.join(target_dir_expanded, "file")
+    target_file = Path(target_dir_expanded) / "file"
     fs.create_dir(target_dir_expanded)
     fs.create_file(target_file)
     assert do_py_completion("~/c") == target_dir
@@ -35,7 +36,7 @@ def test_completion_default_behavior_not_expand_tilde(fs, test_home_dir):
 def test_completion_expand_tidle(fs, test_home_dir):
     target_dir = "~/测试目录"
     target_dir_expanded = os.path.expanduser(target_dir)
-    target_file = os.path.join(target_dir_expanded, "file")
+    target_file = Path(target_dir_expanded) / "file"
     fs.create_dir(target_dir_expanded)
     fs.create_file(target_file)
     assert do_py_completion("~/c") == target_dir_expanded
@@ -43,8 +44,8 @@ def test_completion_expand_tidle(fs, test_home_dir):
 
 def test_completion_keep_leading_dot_slash(fs, test_home_dir):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
-    fs.create_dir(os.path.join(test_home_dir, "subdir1"))
-    fs.create_dir(os.path.join(test_home_dir, "subdir2"))
+    fs.create_dir(Path(test_home_dir) / "subdir1")
+    fs.create_dir(Path(test_home_dir) / "subdir2")
     os.chdir(test_home_dir)
     assert do_py_completion("./") == SEP.join(["./subdir1", "./subdir2"])
 
@@ -65,10 +66,10 @@ def test_complete_implicit_current_directory(fs, test_home_dir):
 def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs, test_home_dir):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     for d in dirs:
-        fs.create_dir(os.path.join(test_home_dir, d))
+        fs.create_dir(Path(test_home_dir) / d)
     for f in files:
-        fs.create_file(os.path.join(test_home_dir, f))
-    excepted = [as_unix_path(os.path.join("~/", f)) for f in excepted]
+        fs.create_file(Path(test_home_dir) / f)
+    excepted = [as_unix_path(Path("~/") / f) for f in excepted]
     assert do_py_completion(typed) == SEP.join(excepted)
 
 
