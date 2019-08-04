@@ -66,23 +66,23 @@ def char_range(c1, c2):
         yield chr(c)
 
 
-def rsplit_selection(path):
+def rsplit_selection(filename):
     sel = None
     if (
-            path
-            and len(path) > 1
-            and not all_ascii(path)
-            and path[-1] in char_range('1', '9')
+            filename
+            and len(filename) > 1
+            and not all_ascii(filename)
+            and filename[-1] in char_range('1', '9')
     ):
-        sel = int(path[-1])
-        return path[:-1], slice(sel-1, sel, 1)
+        sel = int(filename[-1])
+        return filename[:-1], slice(sel-1, sel, 1)
     else:
-        return path, slice(None, None, 1)
+        return filename, slice(None, None, 1)
 
 
-def all_ascii(path):
+def all_ascii(string):
     try:
-        path.encode('ascii')
+        string.encode('ascii')
         return True
     except UnicodeEncodeError:
         return False
@@ -205,10 +205,10 @@ def pre_handler(f):
 
 
 def do_py_completion(path):
-
-    path, pieces = rsplit_selection(path)
     basename = os.path.basename(path)
     dirname = os.path.dirname(path)
+    basename, selections = rsplit_selection(basename)
+    path = os.path.join(dirname, basename)
     expanded_dirname = os.path.expanduser(dirname) or "./"
 
     if not os.path.exists(expanded_dirname):
@@ -251,4 +251,4 @@ def do_py_completion(path):
         ret = natural_sort(ret)
     else:
         ret = unicode_sort(ret)
-    return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret[pieces])
+    return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret[selections])

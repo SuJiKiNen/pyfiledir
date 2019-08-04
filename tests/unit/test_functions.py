@@ -19,9 +19,11 @@ from utils import file_sequence_strategy
 
 @pytest.mark.parametrize(
     "path,excepted", [
-        ("/test1", ("/test1", slice(None, None, 1))),
-        ("/测试1", ("/测试", slice(0, 1, 1))),
-        ("/0", ("/0", slice(None, None, 1))),
+        ("test1", ("test1", slice(None, None, 1))),
+        ("测试1", ("测试", slice(0, 1, 1))),
+        ("0", ("0", slice(None, None, 1))),
+        ("test", ("test", slice(None, None, 1))),
+        ("测试", ("测试", slice(None, None, 1))),
     ],
 )
 def test_rsplit_selection(path, excepted):

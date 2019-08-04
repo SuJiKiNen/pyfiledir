@@ -259,3 +259,19 @@ def test_natural_sort_completion_results(file_seqs):
             patcher.fs.create_file(f)
 
         do_py_completion("./") == SEP.join(file_seqs)
+
+
+@pytest.mark.parametrize(
+    "dirs,typed,excepted", [
+        (["/test1"], "/t1", [""]),
+        (["/测试"], "/c1", [""]),
+        (["/测试"], "/测1", ["/测试"]),
+        (["/测试/test1"], "/测试/t1", [""]),
+        (["/test/测试1"], "/test/测1", ["/test/测试1"]),
+    ],
+)
+def test_rsplit_selection_working_condition(dirs, typed, excepted, fs):
+    for d in dirs:
+        fs.create_dir(d)
+    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    assert do_py_completion(typed) == SEP.join(excepted)
