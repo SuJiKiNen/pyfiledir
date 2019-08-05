@@ -221,15 +221,16 @@ def do_py_completion(path):
 
     if get_truthy_env("PYFILEDIR_EXPAND_TIDLE"):
         dirname = os.path.expanduser(dirname)
-    ret = []
 
-    keep_dot_slash = get_truthy_env("PYFILEDIR_KEEP_LEADING_DOT_SLASH")
+    ret = []
     for f in files:
         if do_py_match(filename=pre_handler(f), abbrev=basename):
             comp_path = os.path.join(dirname, f)
-            if not keep_dot_slash:
-                comp_path = os.path.normpath(comp_path)
             ret.append(comp_path)
+
+    keep_dot_slash = get_truthy_env("PYFILEDIR_KEEP_LEADING_DOT_SLASH")
+    if not keep_dot_slash:
+        ret = [os.path.normpath(p) for p in ret]
 
     if len(ret) > 1 and get_truthy_env("PYFILEDIR_COMPLETE_COMMON_PREFIX"):
         common_prefix = os.path.commonprefix(ret)
