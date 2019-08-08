@@ -1,0 +1,52 @@
+trigger:
+- master
+variables:
+  HYPOTHESIS_PROFILE: ci
+
+jobs:
+- job: 'tests'
+  strategy:
+    matrix:
+      Python35_Linux:
+        python.version: '3.5'
+        imageName: 'ubuntu-latest'
+      Python36_Linux:
+        python.version: '3.6'
+        imageName: 'ubuntu-latest'
+      Python37_Linux:
+        python.version: '3.7'
+        imageName: 'ubuntu-latest'
+
+      Python35_MacOS:
+        imageName: 'macos-latest'
+        python.version: '3.5'
+      Python36_MacOS:
+        imageName: 'macos-latest'
+        python.version: '3.6'
+      Python37_MacOS:
+        imageName: 'macos-latest'
+        python.version: '3.7'
+
+      Python35_Windows:
+        imageName: 'windows-latest'
+        python.version: '3.5'
+      Python36_Windows:
+        imageName: 'windows-latest'
+        python.version: '3.6'
+      Python37_Windows:
+        imageName: 'windows-latest'
+        python.version: '3.7'
+
+  pool:
+    vmImage: '$(imageName)'
+  steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '$(python.version)'
+        architecture: 'x64'
+    - bash: pip install -r requirements-dev.txt
+      displayName: Install python packages.
+    - bash: echo $OSTYPE; bash --version; python -V; pip --version; pytest --version; 
+      displayName: Check executables version
+    - bash: pytest
+      displayName: Run test
