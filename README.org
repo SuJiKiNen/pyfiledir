@@ -1,4 +1,4 @@
-[[https://travis-ci.com/SuJiKiNen/bash-pinyin-abbrev-completion.svg?token=SyYBkLSsqdq7EysyHysJ&branch=master]]
+[[https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.bash-pinyin-abbrev-completion?branchName=master]]
 
 
 * Environment Variables
