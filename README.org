@@ -1,4 +1,4 @@
-[[https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.bash-pinyin-abbrev-completion?branchName=master]]
+#+html: <a href="https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=1&branchName=master"> <img src="https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.bash-pinyin-abbrev-completion?branchName=master#.svg" alt="Azure Pipeline Build Status Badge"> </a>
 
 
 * Environment Variables
