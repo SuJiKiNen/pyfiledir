@@ -34,6 +34,6 @@ repos:
       - id: dockerignore
         name: dockerignore
         description: generate .dockerignore file from .gitignore.
-        entry: python generate_dockerignore.py
+        entry: python helper/generate_dockerignore.py
         language: system
         pass_filenames: false
