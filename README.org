@@ -1,5 +1,7 @@
 #+html: <a href="https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=1&branchName=master"> <img src="https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.bash-pinyin-abbrev-completion?branchName=master#.svg" alt="Azure Pipeline Build Status Badge"> </a>
 
+* Demo
+  [[demo.svg]]
 
 * Environment Variables
   #+BEGIN_SRC python :exports results :output table
@@ -28,6 +30,8 @@
   | PYFILEDIR_USE_NATURAL_SORT       | =False=       | use natural sort, sorting filenames        |
 
 * Development Guide
+** Create Demo
+   =python helper/create_demo.py &=
 ** Profiling
    requirements: =python 3.7=
    #+BEGIN_SRC shell
