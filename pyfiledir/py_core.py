@@ -89,7 +89,11 @@ def all_ascii(string):
 
 
 def unicode_sort(dirs=[]):
-    locale.setlocale(locale.LC_ALL, "")
+    try:
+        locale.setlocale(locale.LC_ALL, "")
+    except locale.Error:
+        # TODO: add warning logger here
+        pass
     return sorted(dirs, key=locale.strxfrm)
 
 
