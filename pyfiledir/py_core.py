@@ -27,15 +27,15 @@ GB2312EncodeingRange = EncodingRange(
 
 class DEFAULT_PYFILEDIR_ENVS(Enum):
 
-    PYFILEDIR_CANDIDATE_SEP = ("\n", "how pyfiledir join candidates")
-    PYFILEDIR_WILDCARD = ("#", "wildcard match charactor for dir or file")
-    PYFILEDIR_ADD_TRAILING_SLASH = ("True", "add trailing slash for directory candidate")
-    PYFILEDIR_KEEP_LEADING_DOT_SLASH = ("True", "keep leading ./ in path")
-    PYFILEDIR_COMPLETE_COMMON_PREFIX = ("True", "complete common prefix of candidates first")
-    PYFILEDIR_EXPAND_TIDLE = ("False", "expand =~= to =/home/<user>=")
-    PYFILEDIR_IGNORE_CASE = ("False", "completion ignore case")
-    PYFILEDIR_USE_UNIHAN_DICT = ("False", "use rich Unihan dict")
-    PYFILEDIR_USE_NATURAL_SORT = ("False", "use natural sort, sorting filenames")
+    PYFILEDIR_CANDIDATE_SEP = ["\n", "how pyfiledir join candidates"]
+    PYFILEDIR_WILDCARD = ["#", "wildcard match charactor for dir or file"]
+    PYFILEDIR_ADD_TRAILING_SLASH = ["True", "add trailing slash for directory candidate"]
+    PYFILEDIR_KEEP_LEADING_DOT_SLASH = ["True", "keep leading ./ in path"]
+    PYFILEDIR_COMPLETE_COMMON_PREFIX = ["True", "complete common prefix of candidates first"]
+    PYFILEDIR_EXPAND_TIDLE = ["False", "expand =~= to =/home/<user>="]
+    PYFILEDIR_IGNORE_CASE = ["False", "completion ignore case"]
+    PYFILEDIR_USE_UNIHAN_DICT = ["True", "use rich Unihan dict"]
+    PYFILEDIR_USE_NATURAL_SORT = ["False", "use natural sort, sorting filenames"]
 
     @classmethod
     def items(cls):
@@ -51,13 +51,58 @@ class DEFAULT_PYFILEDIR_ENVS(Enum):
     def docstring(self):
         return self.value[1]
 
+    @classmethod
+    def update(*args, **kwargs):
+        for k, v in kwargs.items():
+            DEFAULT_PYFILEDIR_ENVS[k].value[0] = v
+
+
+def is_truthy(value):
+    return value not in ("0", "false", "no", "off")
+
 
 def get_truthy_env(name):
-    return str.lower(get_env(name)) not in ("0", "false", "no", "off")
+    return is_truthy(str.lower(get_env(name)))
 
 
 def get_env(env_name):
     return os.environ.get(env_name) or str(DEFAULT_PYFILEDIR_ENVS[env_name])
+
+
+inputrc_to_pyfiledir_env_map = {
+    "mark-directories": 'PYFILEDIR_ADD_TRAILING_SLASH',
+    "completion-ignore-case": 'PYFILEDIR_IGNORE_CASE',
+    "expand-tilde": 'PYFILEDIR_EXPAND_TIDLE',
+}
+
+
+def load_env_from_inputrc(filename=None):
+    parsed_envs = {}
+    try:
+        with open(filename, "r") as f:
+            for line in f:
+                # handle inputrc if statement?
+                if line.startswith('#'):
+                    continue
+                elif line.startswith('set'):
+                    parts = line.split()
+                    if len(parts) < 3:
+                        continue
+                    if parts[1] in inputrc_to_pyfiledir_env_map.keys():
+                        parsed_envs[
+                            inputrc_to_pyfiledir_env_map[parts[1]]
+                        ] = repr(is_truthy(parts[2]))
+    except FileNotFoundError:
+        pass
+    return parsed_envs
+
+
+INPUTRC_ENVS = load_env_from_inputrc(
+    os.environ.get('INPUTRC')
+    or os.path.expanduser('~/.inputrc'),
+)
+
+DEFAULT_PYFILEDIR_ENVS.update(**INPUTRC_ENVS)
 
 
 def char_range(c1, c2):

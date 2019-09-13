@@ -25,9 +25,33 @@
   | PYFILEDIR_KEEP_LEADING_DOT_SLASH | =True=        | keep leading ./ in path                    |
   | PYFILEDIR_COMPLETE_COMMON_PREFIX | =True=        | complete common prefix of candidates first |
   | PYFILEDIR_EXPAND_TIDLE           | =False=       | expand =~= to =/home/<user>=               |
-  | PYFILEDIR_IGNORE_CASE            | =False=       | completion ignore case                     |
-  | PYFILEDIR_USE_UNIHAN_DICT        | =False=       | use rich Unihan dict                       |
+  | PYFILEDIR_IGNORE_CASE            | =True=        | completion ignore case                     |
+  | PYFILEDIR_USE_UNIHAN_DICT        | =True=        | use rich Unihan dict                       |
   | PYFILEDIR_USE_NATURAL_SORT       | =False=       | use natural sort, sorting filenames        |
+
+
+  pyfiledir default following some behaviors from .inputrc, see equivalents below:
+
+  #+BEGIN_SRC python :exports results :output table
+    from pyfiledir.py_core import inputrc_to_pyfiledir_env_map
+    results = []
+    header = [
+        "INPUTRC setting name",
+        "PYFILEDIR environment variable name",
+    ]
+    results.append(header)
+    results.append(None)
+    for key, val in inputrc_to_pyfiledir_env_map.items():
+        results.append([key, val])
+    return results
+  #+END_SRC
+
+  #+RESULTS:
+  | INPUTRC setting name   | PYFILEDIR environment variable name |
+  |------------------------+-------------------------------------|
+  | mark-directories       | PYFILEDIR_ADD_TRAILING_SLASH        |
+  | completion-ignore-case | PYFILEDIR_IGNORE_CASE               |
+  | expand-tilde           | PYFILEDIR_EXPAND_TIDLE              |
 
 * Development Guide
 ** Create Demo

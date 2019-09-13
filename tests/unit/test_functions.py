@@ -1,19 +1,14 @@
 import os
 import random
+from unittest.mock import patch
 
 import pytest
 from hypothesis import given
+from hypothesis import strategies as st
+from pyfakefs.fake_filesystem_unittest import Patcher
 
+from pyfiledir import py_core
 from pyfiledir.__main__ import main
-from pyfiledir.py_core import (
-    all_ascii,
-    do_py_completion,
-    get_py,
-    get_truthy_env,
-    natural_sort,
-    rsplit_selection,
-    same_path,
-)
 from utils import file_sequence_strategy
 
 
@@ -27,7 +22,7 @@ from utils import file_sequence_strategy
     ],
 )
 def test_rsplit_selection(path, excepted):
-    assert rsplit_selection(path) == excepted
+    assert py_core.rsplit_selection(path) == excepted
 
 
 @pytest.mark.parametrize(
@@ -37,11 +32,11 @@ def test_rsplit_selection(path, excepted):
     ],
 )
 def test_isascii(path, excepted):
-    assert all_ascii(path) == excepted
+    assert py_core.all_ascii(path) == excepted
 
 
 def test_same_path(fs, test_home_dir):
-    assert same_path(test_home_dir, "~/")
+    assert py_core.same_path(test_home_dir, "~/")
 
 
 @pytest.mark.parametrize(
@@ -54,7 +49,7 @@ def test_same_path(fs, test_home_dir):
     ]),
 )
 def test_get_py(char, excepted):
-    assert excepted in get_py(char)
+    assert excepted in py_core.get_py(char)
 
 
 @pytest.mark.parametrize(
@@ -74,12 +69,12 @@ def test_get_py(char, excepted):
 def test_get_truthy_env(env_val, excepted):
     key = 'PYFILEDIR_ADD_TRAILING_SLASH'
     os.environ[key] = env_val
-    assert get_truthy_env(key) == excepted
+    assert py_core.get_truthy_env(key) == excepted
 
 
 def test_do_py_completion_on_not_exists_path():
     with pytest.raises(SystemExit):
-        do_py_completion("/not_exists_path/file")
+        py_core.do_py_completion("/not_exists_path/file")
 
 
 @pytest.mark.parametrize(
@@ -96,7 +91,51 @@ def test_main_function(fs, test_home_dir, files, typed, capsys):
     assert any(f in out for f in files)
 
 
-@given(file_sequence_strategy())
+@given(
+    file_seqs=file_sequence_strategy(),
+)
 def test_natural_sort(file_seqs):
     shuffled_file_seqs = random.sample(file_seqs, len(file_seqs))
-    assert file_seqs == natural_sort(shuffled_file_seqs)
+    assert file_seqs == py_core.natural_sort(shuffled_file_seqs)
+
+
+@given(
+    inputrc_envs=st.dictionaries(
+        st.sampled_from(
+            list(py_core.inputrc_to_pyfiledir_env_map.keys()),
+        ),
+        st.booleans().map(lambda x: (x, "on") if x else (x, "off")),
+    ),
+)
+def test_load_env_from_from_inputrc_file(inputrc_envs):
+
+    with Patcher(
+            modules_to_reload=[
+                py_core,
+            ],
+    ) as patcher:
+        file_path = '/.inputrc'
+        contents = "\n".join(
+            ("set {} {}".format(key, inputrc_envs[key][1]) for key in inputrc_envs)
+        )
+        patcher.fs.create_file(file_path, contents=contents)
+        ret = py_core.load_env_from_inputrc(file_path)
+        for key in inputrc_envs:
+            pyfiledir_env_name = py_core.inputrc_to_pyfiledir_env_map[key]
+            assert ret[pyfiledir_env_name] == str(inputrc_envs[key][0])
+
+        # check DEFAULT_PYFILEDIR_ENVS setup successfully according inputrc file
+        with patch.dict(
+                os.environ,
+                {
+                    'INPUTRC': file_path,
+                },
+        ):
+            # inputrc file does not exists, when patcher patch py_core
+            # patcher pasue and resume will reload py_core,this may bad
+            # since it relies on patcher underlying behavior
+            patcher.pause()
+            patcher.resume()
+            for key in inputrc_envs:
+                pyfiledir_env_name = py_core.inputrc_to_pyfiledir_env_map[key]
+                assert str(py_core.DEFAULT_PYFILEDIR_ENVS[pyfiledir_env_name]) == str(inputrc_envs[key][0])
