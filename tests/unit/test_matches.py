@@ -135,6 +135,32 @@ def test_solo_completion_on_files_do_completion_again_not_add_forward_slash(fs):
 
 
 @pytest.mark.parametrize(
+    "dirs,typed,excepted", [
+        (["/docker", "/docker-pg-replication"], "/do", "/docker"),
+        (["/测试", "/测试目录"], "/测1", "/测试/"),
+        (
+            ["/视频素材", "/视频剪辑"],
+            "/视频1",
+            unicode_sort(
+                ["/视频素材/", "/视频剪辑/"],
+            )[0],
+        ),
+    ],
+)
+@patch.dict(
+    os.environ,
+    {
+        "PYFILEDIR_COMPLETE_COMMON_PREFIX": "1",
+        "PYFILEDIR_ADD_TRAILING_SLASH": "on",
+        "PYFILEDIR_USE_NATURAL_SORT": "off",
+    },
+)
+def test_add_forward_slash_functionality(fs, dirs, typed, excepted):
+    [fs.create_dir(d) for d in dirs]
+    assert do_py_completion(typed) == excepted
+
+
+@pytest.mark.parametrize(
     "cn_char,alpha", [
         ("重", "c"),
         ("重", "z"),

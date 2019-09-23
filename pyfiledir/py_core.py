@@ -256,7 +256,7 @@ def pre_handler(f):
 def do_py_completion(path):
     basename = os.path.basename(path)
     dirname = os.path.dirname(path)
-    basename, selections = rsplit_selection(basename)
+    basename, selection = rsplit_selection(basename)
     path = os.path.join(dirname, basename)
     expanded_dirname = os.path.expanduser(dirname) or "./"
 
@@ -281,10 +281,31 @@ def do_py_completion(path):
     if not keep_dot_slash:
         ret = [os.path.normpath(p) for p in ret]
 
+    should_add_slash = True
     if len(ret) > 1 and get_truthy_env("PYFILEDIR_COMPLETE_COMMON_PREFIX"):
         common_prefix = os.path.commonprefix(ret)
+        """
+        if common_prefix is a prefix of others,then it shouldn't
+        add forward slash eg. /docker, /docker-pg-replication/
+        /do[tab] -> /docker
+        when input has number selection,this rule not applied
+        eg. /测试 /测试目录
+        /测1[tab] -> /测试/
+        """
+        if selection == slice(None, None, 1):
+            for p in ret:
+                if len(p) > len(common_prefix) and p.startswith(common_prefix):
+                    should_add_slash = False
+                    break
         if len(common_prefix) > len(path):
             ret = [common_prefix]
+
+    if get_truthy_env("PYFILEDIR_USE_NATURAL_SORT"):
+        ret = natural_sort(ret)
+    else:
+        ret = unicode_sort(ret)
+
+    ret = ret[selection]
 
     if (
             len(ret) == 1
@@ -293,12 +314,10 @@ def do_py_completion(path):
                 get_truthy_env("PYFILEDIR_ADD_TRAILING_SLASH")
                 or same_path(ret[0], path)
             )
+            and should_add_slash
     ):
         ret[0] = os.path.join(ret[0], "")  # add trailing slash
 
     ret = [as_unix_path(p) for p in ret]  # post processing path
-    if get_truthy_env("PYFILEDIR_USE_NATURAL_SORT"):
-        ret = natural_sort(ret)
-    else:
-        ret = unicode_sort(ret)
-    return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret[selections])
+
+    return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret)
