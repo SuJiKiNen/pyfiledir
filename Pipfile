@@ -17,6 +17,7 @@ hypothesis = {index = "http://pypi.douban.com/simple/",version = "*"}
 isort = {index = "http://pypi.douban.com/simple/",version = "*"}
 termtosvg = {index = "http://pypi.douban.com/simple/",version = "*"}
 pyautogui = {index = "http://pypi.douban.com/simple/",version = "*"}
+pyyaml = {index = "https://pypi.doubanio.com/simple/",version = "*"}
 
 [packages]
 

@@ -1,4 +1,44 @@
-#+html: <a href="https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=1&branchName=master"> <img src="https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.bash-pinyin-abbrev-completion?branchName=master#.svg" alt="Azure Pipeline Build Status Badge"> </a>
+* Build Status
+  #+BEGIN_SRC python :exports :results output value replace
+    import yaml
+    import pandas as pd
+    data = yaml.safe_load(open("./azure-pipelines.yml", 'r'))
+    job_name = data["jobs"][0]["job"]
+    data = data["jobs"][0]["strategy"]["matrix"]
+    df = pd.DataFrame.from_dict(data)
+    df.columns.name = "env"
+    df = df.stack().unstack(0)
+    df = df.reset_index()
+    image_url_template = '[[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20{}#.svg]]'
+    df["imageName"] = df["imageName"].str.split("-").str.get(0)
+    df["env"] = df["env"].apply(lambda x: image_url_template.format(x))
+    df = df[["imageName", "python.version", "env"]]
+    s = df['imageName']
+    s2 = s.copy()
+    for k, v in s.items():
+        if k > 0 and s[k] == s[k-1]:
+            s2[k] = ""
+    df['imageName'] = s2
+    df.rename(columns={'env': 'Status', 'python.version': 'Python Version', 'imageName': 'Platform'}, inplace=True)
+    results = df.values.tolist()
+    results.insert(0, df.columns.to_list())
+    results.insert(1, None)
+    return results
+  #+END_SRC
+
+  #+RESULTS:
+  | Platform | Python Version | Status                                                                                                                                                       |
+  |----------+----------------+--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+  | ubuntu   |            3.5 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python35_Linux#.svg]]   |
+  |          |            3.6 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python36_Linux#.svg]]   |
+  |          |            3.7 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python37_Linux#.svg]]   |
+  | macos    |            3.5 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python35_MacOS#.svg]]   |
+  |          |            3.6 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python36_MacOS#.svg]]   |
+  |          |            3.7 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python37_MacOS#.svg]]   |
+  | windows  |            3.5 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python35_Windows#.svg]] |
+  |          |            3.6 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python36_Windows#.svg]] |
+  |          |            3.7 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python37_Windows#.svg]] |
+
 
 * Demo
   [[demo.svg]]
