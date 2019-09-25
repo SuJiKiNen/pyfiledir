@@ -1,5 +1,5 @@
 * Build Status
-  #+BEGIN_SRC python :exports :results output value replace
+  #+BEGIN_SRC python :exports results table
     import yaml
     import pandas as pd
     data = yaml.safe_load(open("./azure-pipelines.yml", 'r'))
@@ -44,7 +44,7 @@
   [[demo.svg]]
 
 * Environment Variables
-  #+BEGIN_SRC python :exports results :output table
+  #+BEGIN_SRC python :exports results table
 
     from pyfiledir.py_core import DEFAULT_PYFILEDIR_ENVS
     results = []
@@ -72,7 +72,7 @@
 
   pyfiledir default following some behaviors from .inputrc, see equivalents below:
 
-  #+BEGIN_SRC python :exports results :output table
+  #+BEGIN_SRC python :exports results table
     from pyfiledir.py_core import inputrc_to_pyfiledir_env_map
     results = []
     header = [
