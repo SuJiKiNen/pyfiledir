@@ -28,7 +28,7 @@ GB2312EncodeingRange = EncodingRange(
 class DEFAULT_PYFILEDIR_ENVS(Enum):
 
     PYFILEDIR_CANDIDATE_SEP = ["\n", "how pyfiledir join candidates"]
-    PYFILEDIR_WILDCARD = ["#", "wildcard match charactor for dir or file"]
+    PYFILEDIR_WILDCARD = [",", "wildcard match charactor for dir or file"]
     PYFILEDIR_ADD_TRAILING_SLASH = ["True", "add trailing slash for directory candidate"]
     PYFILEDIR_KEEP_LEADING_DOT_SLASH = ["True", "keep leading ./ in path"]
     PYFILEDIR_COMPLETE_COMMON_PREFIX = ["True", "complete common prefix of candidates first"]

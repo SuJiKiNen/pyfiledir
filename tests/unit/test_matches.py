@@ -188,11 +188,11 @@ def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
 
 @pytest.mark.parametrize(
     "dirs,typed,excepted", [
-        (["/芙蓉", "/fr"], "/##", ["/芙蓉"]),
-        (["/目录"], "/##", ["/目录"]),
+        (["/芙蓉", "/fr"], "/,,", ["/芙蓉"]),
+        (["/目录"], "/,,", ["/目录"]),
     ],
 )
-def test_number_sign_is_unicode_wildcard(dirs, typed, excepted, fs):
+def test_pyfiledir_wildcard_works(dirs, typed, excepted, fs):
     SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
