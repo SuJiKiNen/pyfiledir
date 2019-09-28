@@ -226,7 +226,7 @@ def do_py_match(filename, abbrev):
 
     for i, alpha in enumerate(abbrev):
         def match():
-            yield alpha == get_env("PYFILEDIR_WILDCARD") and ord(filename[i]) > 127
+            yield alpha == get_env("PYFILEDIR_WILDCARD") and not all_ascii(filename[i])
             yield filename[i] == alpha
             yield alpha in get_py(filename[i])
             yield do_polyphone_match(cn_char=filename[i], alpha=alpha)
