@@ -46,12 +46,12 @@
 * Environment Variables
   #+BEGIN_SRC python :exports results table
 
-    from pyfiledir.py_core import DEFAULT_PYFILEDIR_ENVS
+    from pyfiledir.py_core import PYFILEDIR_ENVS
     results = []
     header = ["Environment variable name", "Default value", "Explanation"]
     results.append(header)
     results.append(None)
-    for key, val in DEFAULT_PYFILEDIR_ENVS.__members__.items():
+    for key, val in PYFILEDIR_ENVS.__members__.items():
         results.append([key, "={}=".format(val), val.docstring])
     return results
   #+END_SRC

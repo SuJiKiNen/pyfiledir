@@ -119,23 +119,19 @@ def test_load_env_from_from_inputrc_file(inputrc_envs):
             ("set {} {}".format(key, inputrc_envs[key][1]) for key in inputrc_envs)
         )
         patcher.fs.create_file(file_path, contents=contents)
-        ret = py_core.load_env_from_inputrc(file_path)
+        ret = py_core.PYFILEDIR_ENVS.load_env_from_inputrc(file_path)
         for key in inputrc_envs:
             pyfiledir_env_name = py_core.inputrc_to_pyfiledir_env_map[key]
             assert ret[pyfiledir_env_name] == str(inputrc_envs[key][0])
 
-        # check DEFAULT_PYFILEDIR_ENVS setup successfully according inputrc file
+        # check PYFILEDIR_ENVS setup successfully according inputrc file
         with patch.dict(
                 os.environ,
                 {
                     'INPUTRC': file_path,
                 },
         ):
-            # inputrc file does not exists, when patcher patch py_core
-            # patcher pasue and resume will reload py_core,this may bad
-            # since it relies on patcher underlying behavior
-            patcher.pause()
-            patcher.resume()
+            py_core.PYFILEDIR_ENVS.collect_inputrc_envs()
             for key in inputrc_envs:
                 pyfiledir_env_name = py_core.inputrc_to_pyfiledir_env_map[key]
-                assert str(py_core.DEFAULT_PYFILEDIR_ENVS[pyfiledir_env_name]) == str(inputrc_envs[key][0])
+                assert str(py_core.PYFILEDIR_ENVS[pyfiledir_env_name]) == str(inputrc_envs[key][0])

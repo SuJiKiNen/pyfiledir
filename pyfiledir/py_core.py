@@ -24,37 +24,11 @@ GB2312EncodeingRange = EncodingRange(
     max_codepoint=b"\xd7\xf9",
 )
 
-
-class DEFAULT_PYFILEDIR_ENVS(Enum):
-
-    PYFILEDIR_CANDIDATE_SEP = ["\n", "how pyfiledir join candidates"]
-    PYFILEDIR_WILDCARD = [",", "wildcard match charactor for dir or file"]
-    PYFILEDIR_ADD_TRAILING_SLASH = ["True", "add trailing slash for directory candidate"]
-    PYFILEDIR_KEEP_LEADING_DOT_SLASH = ["True", "keep leading ./ in path"]
-    PYFILEDIR_COMPLETE_COMMON_PREFIX = ["True", "complete common prefix of candidates first"]
-    PYFILEDIR_EXPAND_TIDLE = ["False", "expand =~= to =/home/<user>="]
-    PYFILEDIR_IGNORE_CASE = ["False", "completion ignore case"]
-    PYFILEDIR_USE_UNIHAN_DICT = ["True", "use rich Unihan dict"]
-    PYFILEDIR_USE_NATURAL_SORT = ["False", "use natural sort, sorting filenames"]
-
-    @classmethod
-    def items(cls):
-        return cls.__members__.items()
-
-    def __str__(self):
-        return self.value[0]
-
-    def __hash__(self, other):
-        return self.value[0] == other.value[0]
-
-    @property
-    def docstring(self):
-        return self.value[1]
-
-    @classmethod
-    def update(*args, **kwargs):
-        for k, v in kwargs.items():
-            DEFAULT_PYFILEDIR_ENVS[k].value[0] = v
+inputrc_to_pyfiledir_env_map = {
+    "mark-directories": 'PYFILEDIR_ADD_TRAILING_SLASH',
+    "completion-ignore-case": 'PYFILEDIR_IGNORE_CASE',
+    "expand-tilde": 'PYFILEDIR_EXPAND_TIDLE',
+}
 
 
 def is_truthy(value):
@@ -66,43 +40,93 @@ def get_truthy_env(name):
 
 
 def get_env(env_name):
-    return os.environ.get(env_name) or str(DEFAULT_PYFILEDIR_ENVS[env_name])
+    return os.environ.get(env_name) or str(PYFILEDIR_ENVS[env_name])
 
 
-inputrc_to_pyfiledir_env_map = {
-    "mark-directories": 'PYFILEDIR_ADD_TRAILING_SLASH',
-    "completion-ignore-case": 'PYFILEDIR_IGNORE_CASE',
-    "expand-tilde": 'PYFILEDIR_EXPAND_TIDLE',
-}
+class PYFILEDIR_ENVS(Enum):
 
+    PYFILEDIR_CANDIDATE_SEP = ["\n", "how pyfiledir join candidates", str]
+    PYFILEDIR_WILDCARD = [",", "wildcard match charactor for dir or file", str]
+    PYFILEDIR_ADD_TRAILING_SLASH = [True, "add trailing slash for directory candidate", bool]
+    PYFILEDIR_KEEP_LEADING_DOT_SLASH = [True, "keep leading ./ in path", bool]
+    PYFILEDIR_COMPLETE_COMMON_PREFIX = [True, "complete common prefix of candidates first", bool]
+    PYFILEDIR_EXPAND_TIDLE = [False, "expand =~= to =/home/<user>=", bool]
+    PYFILEDIR_IGNORE_CASE = [True, "completion ignore case", bool]
+    PYFILEDIR_USE_UNIHAN_DICT = [True, "use rich Unihan dict", bool]
+    PYFILEDIR_USE_NATURAL_SORT = [False, "use natural sort, sorting filenames", bool]
 
-def load_env_from_inputrc(filename=None):
-    parsed_envs = {}
-    try:
-        with open(filename, "r") as f:
-            for line in f:
-                # handle inputrc if statement?
-                if line.startswith('#'):
-                    continue
-                elif line.startswith('set'):
-                    parts = line.split()
-                    if len(parts) < 3:
+    @classmethod
+    def items(cls):
+        return cls.__members__.items()
+
+    def __str__(self):
+        return str(self.value[0])
+
+    def __hash__(self, other):
+        return self.value[0] == other.value[0]
+
+    def __eq__(self, other):
+        return self.value[0] == other
+
+    def __bool__(self):
+        return self.value[0]
+
+    @property
+    def docstring(self):
+        return self.value[1]
+
+    @staticmethod
+    def update(*args, **kwargs):
+        for k, v in kwargs.items():
+            PYFILEDIR_ENVS[k].value[0] = v
+
+    def load_env_from_inputrc(filename=None):
+        parsed_envs = {}
+        try:
+            with open(filename, "r") as f:
+                for line in f:
+                    # handle inputrc if statement?
+                    if line.startswith('#'):
                         continue
-                    if parts[1] in inputrc_to_pyfiledir_env_map.keys():
-                        parsed_envs[
-                            inputrc_to_pyfiledir_env_map[parts[1]]
-                        ] = repr(is_truthy(parts[2]))
-    except FileNotFoundError:
-        pass
-    return parsed_envs
+                    elif line.startswith('set'):
+                        parts = line.split()
+                        if len(parts) < 3:
+                            continue
+                        if parts[1] in inputrc_to_pyfiledir_env_map.keys():
+                            parsed_envs[
+                                inputrc_to_pyfiledir_env_map[parts[1]]
+                            ] = repr(is_truthy(parts[2]))
+        except FileNotFoundError:
+            pass
+        return parsed_envs
 
+    @staticmethod
+    def collect_inputrc_envs():
+        INPUTRC_ENVS = PYFILEDIR_ENVS.load_env_from_inputrc(
+            os.environ.get('INPUTRC')
+            or os.path.expanduser('~/.inputrc'),
+        )
+        PYFILEDIR_ENVS.update(**INPUTRC_ENVS)
 
-INPUTRC_ENVS = load_env_from_inputrc(
-    os.environ.get('INPUTRC')
-    or os.path.expanduser('~/.inputrc'),
-)
+    @staticmethod
+    def collect_environ_envs():
+        ENVIRON_ENVS = PYFILEDIR_ENVS.load_envs_from_environ()
+        PYFILEDIR_ENVS.update(**ENVIRON_ENVS)
 
-DEFAULT_PYFILEDIR_ENVS.update(**INPUTRC_ENVS)
+    @staticmethod
+    def load_envs_from_environ():
+        envs_from_environ = {}
+        for env_name, val in PYFILEDIR_ENVS.items():
+            if val.value[2] == bool:
+                envs_from_environ[env_name] = get_truthy_env(env_name)
+            if val.value[2] == str:
+                envs_from_environ[env_name] = get_env(env_name)
+        return envs_from_environ
+
+    @staticmethod
+    def collect_envs():
+        PYFILEDIR_ENVS.collect_inputrc_envs()
+        PYFILEDIR_ENVS.collect_environ_envs()
 
 
 def char_range(c1, c2):
@@ -166,7 +190,7 @@ def get_py(char, _encoding="GB2312"):
     There are 3,755 Level 1 Chinese characters, ranging from 0xB0A1 to 0xD7F9 in GB2312 codes.
     """
 
-    if get_truthy_env("PYFILEDIR_USE_UNIHAN_DICT"):
+    if PYFILEDIR_ENVS.PYFILEDIR_USE_UNIHAN_DICT:
         from pyfiledir.py_dict import PY_DICT
         if char in PY_DICT.keys():
             return [pinyin[0] for pinyin in PY_DICT[char]]
@@ -226,7 +250,7 @@ def do_py_match(filename, abbrev):
 
     for i, alpha in enumerate(abbrev):
         def match():
-            yield alpha == get_env("PYFILEDIR_WILDCARD") and not all_ascii(filename[i])
+            yield alpha == PYFILEDIR_ENVS.PYFILEDIR_WILDCARD and not all_ascii(filename[i])
             yield filename[i] == alpha
             yield alpha in get_py(filename[i])
             yield do_polyphone_match(cn_char=filename[i], alpha=alpha)
@@ -248,12 +272,13 @@ def as_unix_path(path):
 
 
 def pre_handler(f):
-    if get_truthy_env("PYFILEDIR_IGNORE_CASE"):
+    if PYFILEDIR_ENVS.PYFILEDIR_IGNORE_CASE:
         return f.lower()
     return f
 
 
 def do_py_completion(path):
+    PYFILEDIR_ENVS.collect_envs()
     basename = os.path.basename(path)
     dirname = os.path.dirname(path)
     basename, selection = rsplit_selection(basename)
@@ -268,7 +293,7 @@ def do_py_completion(path):
     except Exception:
         sys.exit(0)
 
-    if get_truthy_env("PYFILEDIR_EXPAND_TIDLE"):
+    if PYFILEDIR_ENVS.PYFILEDIR_EXPAND_TIDLE:
         dirname = os.path.expanduser(dirname)
 
     ret = []
@@ -277,12 +302,12 @@ def do_py_completion(path):
             comp_path = os.path.join(dirname, f)
             ret.append(comp_path)
 
-    keep_dot_slash = get_truthy_env("PYFILEDIR_KEEP_LEADING_DOT_SLASH")
+    keep_dot_slash = PYFILEDIR_ENVS.PYFILEDIR_KEEP_LEADING_DOT_SLASH
     if not keep_dot_slash:
         ret = [os.path.normpath(p) for p in ret]
 
     should_add_slash = True
-    if len(ret) > 1 and get_truthy_env("PYFILEDIR_COMPLETE_COMMON_PREFIX"):
+    if len(ret) > 1 and PYFILEDIR_ENVS.PYFILEDIR_COMPLETE_COMMON_PREFIX:
         common_prefix = os.path.commonprefix(ret)
         """
         if common_prefix is a prefix of others,then it shouldn't
@@ -300,7 +325,7 @@ def do_py_completion(path):
         if len(common_prefix) > len(path):
             ret = [common_prefix]
 
-    if get_truthy_env("PYFILEDIR_USE_NATURAL_SORT"):
+    if PYFILEDIR_ENVS.PYFILEDIR_USE_NATURAL_SORT:
         ret = natural_sort(ret)
     else:
         ret = unicode_sort(ret)
@@ -311,7 +336,7 @@ def do_py_completion(path):
             len(ret) == 1
             and os.path.isdir(ret[0])
             and (
-                get_truthy_env("PYFILEDIR_ADD_TRAILING_SLASH")
+                PYFILEDIR_ENVS.PYFILEDIR_ADD_TRAILING_SLASH
                 or same_path(ret[0], path)
             )
             and should_add_slash
@@ -320,4 +345,4 @@ def do_py_completion(path):
 
     ret = [as_unix_path(p) for p in ret]  # post processing path
 
-    return get_env("PYFILEDIR_CANDIDATE_SEP").join(ret)
+    return str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP).join(ret)

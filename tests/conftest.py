@@ -5,7 +5,7 @@ from datetime import timedelta
 import pytest
 from hypothesis import Verbosity, settings
 
-from pyfiledir.py_core import DEFAULT_PYFILEDIR_ENVS
+from pyfiledir.py_core import PYFILEDIR_ENVS
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'helpers'))
 
@@ -46,7 +46,7 @@ def set_pyfiledir_default_envs(monkeysession):
     """
     Default environment for running tests.
     """
-    for env_name, val in DEFAULT_PYFILEDIR_ENVS.items():
+    for env_name, val in PYFILEDIR_ENVS.items():
         monkeysession.setenv(env_name, val)
     monkeysession.setenv("PYFILEDIR_ADD_TRAILING_SLASH", "False")
     monkeysession.setenv("PYFILEDIR_COMPLETE_COMMON_PREFIX", "False")

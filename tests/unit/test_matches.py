@@ -7,10 +7,10 @@ from hypothesis import given, settings
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from pyfiledir.py_core import (
+    PYFILEDIR_ENVS,
     as_unix_path,
     do_polyphone_match,
     do_py_completion,
-    get_env,
     unicode_sort,
 )
 from utils import file_sequence_strategy
@@ -42,7 +42,7 @@ def test_completion_expand_tidle(fs, test_home_dir):
 
 
 def test_completion_keep_leading_dot_slash(fs, test_home_dir):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     fs.create_dir(os.path.join(test_home_dir, "subdir1"))
     fs.create_dir(os.path.join(test_home_dir, "subdir2"))
     os.chdir(test_home_dir)
@@ -50,7 +50,7 @@ def test_completion_keep_leading_dot_slash(fs, test_home_dir):
 
 
 def test_complete_implicit_current_directory(fs, test_home_dir):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     os.chdir("/home")
     assert do_py_completion("t") == SEP.join(["test"])
 
@@ -63,7 +63,7 @@ def test_complete_implicit_current_directory(fs, test_home_dir):
     ],
 )
 def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs, test_home_dir):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     for d in dirs:
         fs.create_dir(os.path.join(test_home_dir, d))
     for f in files:
@@ -92,7 +92,7 @@ def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed,
     ],
 )
 def test_number_selection(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -117,7 +117,7 @@ def test_number_selection(dirs, typed, excepted, fs):
     ],
 )
 def test_number_selection_start_from_one(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -181,7 +181,7 @@ def test_do_polyphone_match(cn_char, alpha):
     ],
 )
 def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -193,7 +193,7 @@ def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
     ],
 )
 def test_pyfiledir_wildcard_works(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -220,7 +220,7 @@ def test_pyfiledir_wildcard_works(dirs, typed, excepted, fs):
     },
 )
 def test_complete_common_prefix_first(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -238,7 +238,7 @@ def test_complete_common_prefix_first(dirs, typed, excepted, fs):
     },
 )
 def test_candidates_ignore_case(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -257,7 +257,7 @@ def test_candidates_ignore_case(dirs, typed, excepted, fs):
     },
 )
 def test_use_rich_unihan_dict_works(dirs, typed, excepted, fs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     [fs.create_dir(d) for d in dirs]
     assert do_py_completion(typed) == SEP.join(excepted)
 
@@ -273,7 +273,7 @@ def test_use_rich_unihan_dict_works(dirs, typed, excepted, fs):
 @given(file_seqs=file_sequence_strategy())
 @settings(max_examples=32)
 def test_natural_sort_completion_results(file_seqs):
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     # hypothesis don't work well with fixture,
     # it reuse fixtrue through every example
     # setup up and teardwon pyfakefs patch manually
@@ -299,5 +299,5 @@ def test_natural_sort_completion_results(file_seqs):
 def test_rsplit_selection_working_condition(dirs, typed, excepted, fs):
     for d in dirs:
         fs.create_dir(d)
-    SEP = get_env("PYFILEDIR_CANDIDATE_SEP")
+    SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     assert do_py_completion(typed) == SEP.join(excepted)
