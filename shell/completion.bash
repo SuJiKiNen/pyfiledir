@@ -45,6 +45,14 @@ _pyfiledir_completion() {
     fi
 }
 
+if [ -z "$PYFILEDIR_BASH_COMPLETE_OPTIONS" ]; then
+    PYFILEDIR_BASH_COMPLETE_OPTIONS="-o nospace -o bashdefault -o default -F _pyfiledir_completion"
+fi
+
+if [ -z "$PYFILEDIR_BASH_COMPLETION_COMMANDS" ]; then
+    PYFILEDIR_BASH_COMPLETION_COMMANDS="cat cd cp emacs ln ls mkdir mv rm rmdir vi vim wc"
+fi
+
 if [[ -n "$BASH_VERSION" ]]; then
-    complete -o "nospace" -o "bashdefault" -o "default" -F _pyfiledir_completion ls cd cat
+    complete $PYFILEDIR_BASH_COMPLETE_OPTIONS $PYFILEDIR_BASH_COMPLETION_COMMANDS
 fi
