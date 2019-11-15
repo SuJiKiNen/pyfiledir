@@ -4,20 +4,21 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [dev-packages]
-pdbpp = {index = "http://pypi.douban.com/simple/",version = "*"}
-flake8 = {index = "http://pypi.douban.com/simple/",version = "*"}
-pytest = {index = "http://pypi.douban.com/simple/",version = "*"}
-pyfakefs = {index = "http://pypi.douban.com/simple/",version = "*"}
-ipython = {index = "http://pypi.douban.com/simple/",version = "*"}
-pytest-cov = {index = "http://pypi.douban.com/simple/",version = "*"}
-pre-commit = {index = "http://pypi.douban.com/simple/",version = "*"}
-pandas = {index = "http://pypi.douban.com/simple/",version = "*"}
-jupyterlab = {index = "http://pypi.douban.com/simple/",version = "*"}
-hypothesis = {index = "http://pypi.douban.com/simple/",version = "*"}
-isort = {index = "http://pypi.douban.com/simple/",version = "*"}
-termtosvg = {index = "http://pypi.douban.com/simple/",version = "*"}
-pyautogui = {index = "http://pypi.douban.com/simple/",version = "*"}
-pyyaml = {index = "https://pypi.doubanio.com/simple/",version = "*"}
+pdbpp = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+flake8 = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pytest = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pyfakefs = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+ipython = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pytest-cov = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pre-commit = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pandas = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+jupyterlab = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+hypothesis = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+isort = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+termtosvg = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pyautogui = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pyyaml = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+pillow = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 
 [packages]
 
