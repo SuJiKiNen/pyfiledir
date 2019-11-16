@@ -129,6 +129,9 @@ class PYFILEDIR_ENVS(Enum):
         PYFILEDIR_ENVS.collect_environ_envs()
 
 
+_ENV = PYFILEDIR_ENVS
+
+
 def char_range(c1, c2):
     """Generates the characters from `c1` to `c2`, inclusive."""
     for c in range(ord(c1), ord(c2)+1):
@@ -190,7 +193,7 @@ def get_py(char, _encoding="GB2312"):
     There are 3,755 Level 1 Chinese characters, ranging from 0xB0A1 to 0xD7F9 in GB2312 codes.
     """
 
-    if PYFILEDIR_ENVS.PYFILEDIR_USE_UNIHAN_DICT:
+    if _ENV.PYFILEDIR_USE_UNIHAN_DICT:
         from pyfiledir.py_dict import PY_DICT
         if char in PY_DICT.keys():
             return [pinyin[0] for pinyin in PY_DICT[char]]
@@ -250,7 +253,7 @@ def do_py_match(filename, abbrev):
 
     for i, alpha in enumerate(abbrev):
         def match():
-            yield alpha == PYFILEDIR_ENVS.PYFILEDIR_WILDCARD and not all_ascii(filename[i])
+            yield alpha == _ENV.PYFILEDIR_WILDCARD and not all_ascii(filename[i])
             yield filename[i] == alpha
             yield alpha in get_py(filename[i])
             yield do_polyphone_match(cn_char=filename[i], alpha=alpha)
@@ -272,13 +275,13 @@ def as_unix_path(path):
 
 
 def pre_handler(f):
-    if PYFILEDIR_ENVS.PYFILEDIR_IGNORE_CASE:
+    if _ENV.PYFILEDIR_IGNORE_CASE:
         return f.lower()
     return f
 
 
 def do_py_completion(path):
-    PYFILEDIR_ENVS.collect_envs()
+    _ENV.collect_envs()
     basename = os.path.basename(path)
     dirname = os.path.dirname(path)
     basename, selection = rsplit_selection(basename)
@@ -293,7 +296,7 @@ def do_py_completion(path):
     except Exception:
         sys.exit(0)
 
-    if PYFILEDIR_ENVS.PYFILEDIR_EXPAND_TIDLE:
+    if _ENV.PYFILEDIR_EXPAND_TIDLE:
         dirname = os.path.expanduser(dirname)
 
     ret = []
@@ -302,12 +305,12 @@ def do_py_completion(path):
             comp_path = os.path.join(dirname, f)
             ret.append(comp_path)
 
-    keep_dot_slash = PYFILEDIR_ENVS.PYFILEDIR_KEEP_LEADING_DOT_SLASH
+    keep_dot_slash = _ENV.PYFILEDIR_KEEP_LEADING_DOT_SLASH
     if not keep_dot_slash:
         ret = [os.path.normpath(p) for p in ret]
 
     should_add_slash = True
-    if len(ret) > 1 and PYFILEDIR_ENVS.PYFILEDIR_COMPLETE_COMMON_PREFIX:
+    if len(ret) > 1 and _ENV.PYFILEDIR_COMPLETE_COMMON_PREFIX:
         common_prefix = os.path.commonprefix(ret)
         """
         if common_prefix is a prefix of others,then it shouldn't
@@ -325,7 +328,7 @@ def do_py_completion(path):
         if len(common_prefix) > len(path):
             ret = [common_prefix]
 
-    if PYFILEDIR_ENVS.PYFILEDIR_USE_NATURAL_SORT:
+    if _ENV.PYFILEDIR_USE_NATURAL_SORT:
         ret = natural_sort(ret)
     else:
         ret = unicode_sort(ret)
@@ -336,7 +339,7 @@ def do_py_completion(path):
             len(ret) == 1
             and os.path.isdir(ret[0])
             and (
-                PYFILEDIR_ENVS.PYFILEDIR_ADD_TRAILING_SLASH
+                _ENV.PYFILEDIR_ADD_TRAILING_SLASH
                 or same_path(ret[0], path)
             )
             and should_add_slash
@@ -345,4 +348,4 @@ def do_py_completion(path):
 
     ret = [as_unix_path(p) for p in ret]  # post processing path
 
-    return str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP).join(ret)
+    return str(_ENV.PYFILEDIR_CANDIDATE_SEP).join(ret)
