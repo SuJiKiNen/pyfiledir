@@ -40,7 +40,6 @@
   | windows  |            3.5 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python35_Windows#.svg]] |
   |          |            3.6 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python36_Windows#.svg]] |
   |          |            3.7 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python37_Windows#.svg]] |
-  |          |            3.8 | [[https://dev.azure.com/sujikinen/pyfiledir/_build/latest?definitionId=2&branchName=master][https://dev.azure.com/sujikinen/pyfiledir/_apis/build/status/SuJiKiNen.pyfiledir?branchName=master&jobName=tests&configuration=tests%20Python38_Windows#.svg]] |
 
 
 * Demo

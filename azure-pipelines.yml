@@ -42,9 +42,6 @@ jobs:
       Python37_Windows:
         imageName: 'windows-latest'
         python.version: '3.7'
-      Python38_Windows:
-        imageName: 'windows-latest'
-        python.version: '3.8'
 
   pool:
     vmImage: '$(imageName)'

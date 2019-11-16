@@ -3,7 +3,7 @@ import random
 from unittest.mock import patch
 
 import pytest
-from hypothesis import given
+from hypothesis import given, settings
 from hypothesis import strategies as st
 from pyfakefs.fake_filesystem_unittest import Patcher
 
@@ -94,6 +94,7 @@ def test_main_function(fs, test_home_dir, files, typed, capsys):
 @given(
     file_seqs=file_sequence_strategy(),
 )
+@settings(max_examples=32)
 def test_natural_sort(file_seqs):
     shuffled_file_seqs = random.sample(file_seqs, len(file_seqs))
     assert file_seqs == py_core.natural_sort(shuffled_file_seqs)
