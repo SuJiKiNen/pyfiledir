@@ -8,7 +8,7 @@ pdbpp = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
 flake8 = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
 pytest = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
 pyfakefs = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
-ipython = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
+ipython = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "==7.8.0"}
 pytest-cov = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
 pre-commit = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
 pandas = {index = "http://mirrors.aliyun.com/simple/",version = "*"}
