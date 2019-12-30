@@ -60,4 +60,9 @@ def test_home_dir(fs, monkeypatch):
     home_dir = '/home/test'
     fs.create_dir(home_dir)
     monkeypatch.setenv('HOME', home_dir)
+    # https://docs.python.org/3/whatsnew/3.8.html
+    # expanduser() on Windows now prefers the USERPROFILE environment variable
+    # and does not use HOME, which is not normally set for regular user accounts.
+    # (Contributed by Anthony Sottile in bpo-36264.)
+    monkeypatch.setenv('USERPROFILE', home_dir)
     return home_dir
