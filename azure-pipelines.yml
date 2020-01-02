@@ -8,17 +8,17 @@ jobs:
   strategy:
     matrix:
       Python35_Linux:
+        imageName: 'ubuntu-latest'
         python.version: '3.5'
-        imageName: 'ubuntu-latest'
       Python36_Linux:
+        imageName: 'ubuntu-latest'
         python.version: '3.6'
-        imageName: 'ubuntu-latest'
       Python37_Linux:
+        imageName: 'ubuntu-latest'
         python.version: '3.7'
-        imageName: 'ubuntu-latest'
       Python38_Linux:
-        python.version: '3.8'
         imageName: 'ubuntu-latest'
+        python.version: '3.8'
 
       Python35_MacOS:
         imageName: 'macos-latest'
