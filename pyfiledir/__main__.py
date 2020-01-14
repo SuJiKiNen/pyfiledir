@@ -30,19 +30,21 @@ sys.path.append(os.path.join(ROOT_DIR, "pyfiledir"))
 
 if __package__ is None or __package__ == '':
     # executed directly
-    from py_core import do_py_completion
+    from py_cli import process_args, parse_args
 else:
     # imported as a package
-    from pyfiledir.py_core import do_py_completion
+    from pyfiledir.py_cli import process_args, parse_args
 
 
-def main(argv):
-    if len(argv) >= 2:
-        print(do_py_completion(path=argv[1]), end="")
+def main(args=None):
+    if args is None:
+        args = sys.argv[1:]
+    args = parse_args(args)
+    process_args(args)
 
 
 if __name__ == '__main__':
-    sys.exit(main(sys.argv))
+    sys.exit(main())
 
 # Local Variables:
 # mode: python

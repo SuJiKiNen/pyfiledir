@@ -55,7 +55,9 @@ jobs:
         architecture: 'x64'
     - bash: pip install -r requirements-dev.txt
       displayName: Install python packages.
+    - bash: pip install -e .
+      displayName: Install pyfiledir.
     - bash: echo $OSTYPE; bash --version; python -V; pip --version; pytest --version;
-      displayName: Check executables version
+      displayName: Check executables version.
     - bash: pytest
-      displayName: Run test
+      displayName: Run test.

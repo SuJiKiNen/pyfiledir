@@ -86,7 +86,9 @@ def test_do_py_completion_on_not_exists_path():
 def test_main_function(fs, test_home_dir, files, typed, capsys):
     os.chdir(test_home_dir)
     [fs.create_file(f) for f in files]
-    main(["pyfiledir", typed])
+    argv = ["pyfiledir", typed]
+    args = argv[1:]
+    main(args)
     out, err = capsys.readouterr()
     assert any(f in out for f in files)
 
