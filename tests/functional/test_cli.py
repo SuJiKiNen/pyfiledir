@@ -71,4 +71,4 @@ def test_where(script_runner, args):
     ret = script_runner.run('pyfiledir', args)
     assert ret.success
     assert ret.stderr == ''
-    assert 'pyfiledir' in ret.stdout
+    assert ret.stdout.strip().endswith('pyfiledir')
