@@ -36,7 +36,13 @@ _envs_action = parser.add_argument(
     "-e",
     "--envs",
     action='store_true',
-    help="print available environment variables",
+    help="print available environment variables.",
+)
+
+_bash_envs_action = parser.add_argument(
+    "--bash-envs",
+    action='store_true',
+    help="print bash export environment settings.",
 )
 
 _version_action = parser.add_argument(
@@ -44,12 +50,31 @@ _version_action = parser.add_argument(
     '-V',
     '--version',
     action='store_true',
-    help='print pyfiledir version',
+    help='print pyfiledir version.',
+)
+
+_where_action = parser.add_argument(
+    "-w",
+    "--where",
+    action='store_true',
+    help="print where pyfiledir is.",
 )
 
 
 def parse_args(argv):
     return parser.parse_args(argv)
+
+
+def process_print_bash_export_envs(args):
+    PYFILEDIR_ENVS.collect_envs()
+    for env_name, info in PYFILEDIR_ENVS.__members__.items():
+        cur_value = repr(info.value[0])
+        print(
+            "export {}={}".format(
+                env_name,
+                cur_value,
+            ),
+        )
 
 
 def process_print_envs(args):
@@ -104,12 +129,21 @@ def process_print_versions(args):
     )
 
 
+def process_print_where(args):
+    import sys
+    print(sys.argv[0])
+
+
 def process_args(args):
     if args.envs:
         process_print_envs(args)
+    elif args.bash_envs:
+        process_print_bash_export_envs(args)
     elif args.version:
         process_print_versions(args)
     elif args.notarikon:
         print(do_py_completion(path=args.notarikon), end="")
+    elif args.where:
+        process_print_where(args)
     else:
         parser.print_help()
