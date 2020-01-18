@@ -2,8 +2,7 @@ import pytest
 
 from pyfiledir.__version__ import __version__
 from pyfiledir.py_cli import (
-    _bash_envs_action,
-    _envs_action,
+    _HUMAN_READBLE_ENVS_HEADER,
     _help_action,
     _version_action,
     _where_action,
@@ -12,12 +11,12 @@ from pyfiledir.py_core import PYFILEDIR_ENVS
 
 
 @pytest.mark.parametrize(
-    "args", [
+    "arg", [
         *_version_action.option_strings,
     ],
 )
-def test_version(script_runner, args):
-    ret = script_runner.run('pyfiledir', args)
+def test_version(script_runner, arg):
+    ret = script_runner.run('pyfiledir', arg)
     assert ret.success
     assert __version__ in ret.stdout
     assert "python" in ret.stdout.lower()
@@ -25,50 +24,40 @@ def test_version(script_runner, args):
 
 
 @pytest.mark.parametrize(
-    "args", [
+    "arg", [
         "",
         *_help_action.option_strings,
     ],
 )
-def test_help(script_runner, args):
-    ret = script_runner.run('pyfiledir', args)
+def test_help(script_runner, arg):
+    ret = script_runner.run('pyfiledir', arg)
     assert ret.success
     assert ret.stderr == ''
 
 
 @pytest.mark.parametrize(
-    "args", [
-        *_envs_action.option_strings,
+    "args,special_expected_strs", [
+        (("-e", ), _HUMAN_READBLE_ENVS_HEADER),
+        (("-e", "bash"), ""),
     ],
 )
-def test_envs(script_runner, args):
-    ret = script_runner.run('pyfiledir', args)
+def test_print_envs(script_runner, args, special_expected_strs):
+    ret = script_runner.run('pyfiledir', *args)
     assert ret.success
     assert ret.stderr == ''
+    for expepted_str in special_expected_strs:
+        assert expepted_str in ret.stdout
     for env in PYFILEDIR_ENVS:
         assert env.name in ret.stdout
 
 
 @pytest.mark.parametrize(
-    "args", [
-        *_bash_envs_action.option_strings,
-    ],
-)
-def test_bash_envs(script_runner, args):
-    ret = script_runner.run('pyfiledir', args)
-    assert ret.success
-    assert ret.stderr == ''
-    for env in PYFILEDIR_ENVS:
-        assert env.name in ret.stdout
-
-
-@pytest.mark.parametrize(
-    "args", [
+    "arg", [
         *_where_action.option_strings,
     ],
 )
-def test_where(script_runner, args):
-    ret = script_runner.run('pyfiledir', args)
+def test_where(script_runner, arg):
+    ret = script_runner.run('pyfiledir', arg)
     assert ret.success
     assert ret.stderr == ''
     assert ret.stdout.strip().endswith('pyfiledir')

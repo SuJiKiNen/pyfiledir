@@ -35,14 +35,10 @@ _help_action = parser.add_argument(
 _envs_action = parser.add_argument(
     "-e",
     "--envs",
-    action='store_true',
+    nargs='?',
+    const="human",
+    dest="output_env_type",
     help="print available environment variables.",
-)
-
-_bash_envs_action = parser.add_argument(
-    "--bash-envs",
-    action='store_true',
-    help="print bash export environment settings.",
 )
 
 _version_action = parser.add_argument(
@@ -70,11 +66,14 @@ def process_print_bash_export_envs(args):
     for env_name, info in PYFILEDIR_ENVS.__members__.items():
         cur_value = repr(info.value[0])
         print(
-            "export {}={}".format(
+            "{}={}".format(
                 env_name,
                 cur_value,
             ),
         )
+
+
+_HUMAN_READBLE_ENVS_HEADER = ("ENV_NAME", "TYPE", "CURRENT_VALUE")
 
 
 def process_print_envs(args):
@@ -96,7 +95,7 @@ def process_print_envs(args):
         "{:^" + str(max_env_value_len + PADDING) + "}"
     )
 
-    print(row_format.format("ENV_NAME", "TYPE", "CURRENT_VALUE"))
+    print(row_format.format(*_HUMAN_READBLE_ENVS_HEADER))
     for env_name, info in PYFILEDIR_ENVS.__members__.items():
         cur_value = repr(info.value[0])
         env_type = info.value[2].__name__
@@ -107,6 +106,8 @@ def process_print_envs(args):
                 cur_value,
             ),
         )
+    print()
+    print('You can ues bash "pyfiledir -e bash" to view a simple version.')
 
 
 def process_print_versions(args):
@@ -135,10 +136,12 @@ def process_print_where(args):
 
 
 def process_args(args):
-    if args.envs:
-        process_print_envs(args)
-    elif args.bash_envs:
-        process_print_bash_export_envs(args)
+
+    if args.output_env_type:
+        if args.output_env_type == "human":
+            process_print_envs(args)
+        elif args.output_env_type == "bash":
+            process_print_bash_export_envs(args)
     elif args.version:
         process_print_versions(args)
     elif args.notarikon:
