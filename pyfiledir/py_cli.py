@@ -114,6 +114,7 @@ def process_print_versions(args):
     import platform
     import sys
     from __version__ import __version__
+    from __unihan import __unihan_version__, __unihan_data_file_url__
     print(
         "{:<9} {:<10} from ({})".format(
             platform.python_implementation(),
@@ -126,6 +127,13 @@ def process_print_versions(args):
             "pyfiledir",
             __version__,
             sys.argv[0],
+        ),
+    )
+    print(
+        "{:<9} {:<10} from ({})".format(
+            "Unihan",
+            __unihan_version__,
+            __unihan_data_file_url__,
         ),
     )
 

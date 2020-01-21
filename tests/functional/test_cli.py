@@ -19,7 +19,8 @@ def test_version(script_runner, arg):
     ret = script_runner.run('pyfiledir', arg)
     assert ret.success
     assert __version__ in ret.stdout
-    assert "python" in ret.stdout.lower()
+    for name in ["python", "pyfiledir", "unihan"]:
+        assert name in ret.stdout.lower()
     assert ret.stderr == ''
 
 
