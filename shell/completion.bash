@@ -20,8 +20,13 @@ _pyfiledir_completion() {
     local length
     local words
     IFS=$'\n'
+
     cur="${COMP_WORDS[COMP_CWORD]}"
     cur=$(eval printf '%s' "$cur") # unquote current input
+    if [ -z "$cur" ]; then
+        return 0
+    fi
+
     if [ "$OSTYPE" = "msys" ] && command -v dos2unix >/dev/null 2>&1; then
         words=$(pyfiledir "$cur" | dos2unix)
     else
@@ -38,7 +43,7 @@ _pyfiledir_completion() {
     fi
 
     length="${#words[@]}"
-    if [[ "$length" -eq 0 ]]; then
+    if [ "$length" -eq 0 ]; then
         COMPREPLY=()
     else
         COMPREPLY=($(printf '%q'"$IFS" "${words[@]}"))
@@ -53,6 +58,6 @@ if [ -z "$PYFILEDIR_BASH_COMPLETION_COMMANDS" ]; then
     PYFILEDIR_BASH_COMPLETION_COMMANDS="cat cd cp emacs ln ls mkdir mv rm rmdir vi vim wc"
 fi
 
-if [[ -n "$BASH_VERSION" ]]; then
+if [ -n "$BASH_VERSION" ]; then
     complete $PYFILEDIR_BASH_COMPLETE_OPTIONS $PYFILEDIR_BASH_COMPLETION_COMMANDS
 fi
