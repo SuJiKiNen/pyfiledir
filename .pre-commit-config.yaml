@@ -27,7 +27,7 @@ repos:
       - id: requirements
         name: requirements
         description: generate requirements file from Pipfile.
-        entry: bash -c "pipenv lock -d -r > requirements-dev.txt"
+        entry: bash -c "pipenv lock -r > requirements-test.txt"
         language: system
         pass_filenames: false
 

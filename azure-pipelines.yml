@@ -53,7 +53,7 @@ jobs:
       inputs:
         versionSpec: '$(python.version)'
         architecture: 'x64'
-    - bash: pip install -r requirements-dev.txt
+    - bash: pip install -r requirements-test.txt
       displayName: Install python packages.
     - bash: pip install -e .
       displayName: Install pyfiledir.
