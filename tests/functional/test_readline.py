@@ -1,6 +1,9 @@
+import sys
+
 import pytest
 
 
+@pytest.mark.skipif(sys.platform != "linux", reason="skip on windows,macOS")
 @pytest.mark.parametrize(
     "dirs,typed,expected",
     (

@@ -14,21 +14,25 @@ matrix:
     - os: linux
       language: python
       python: '3.7'
-      dist: xenial   # required for Python >= 3.7
-    - name: "Python 3.7.2 on macOS"
-      os: osx
-      osx_image: xcode10.2
-      language: shell
+    - os: linux
+      language: python
       python: '3.7'
-    - name: "Python 3.7.3 on Windows"
+    - name: "Python 3.7.4 on macOS"
+      os: osx
+      osx_image: xcode11.2  # Python 3.7.4 running on macOS 10.14.4
+      language: shell       # 'language: python' is an error on Travis CI macOS
+    - name: "Python 3.8.0 on Windows"
       os: windows
       language: shell
-      before_install: choco install python
-      env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
+      before_install:
+        - choco install python --version 3.8.0
+        - python -m pip install --upgrade pip
+      env: PATH=/c/Python38:/c/Python38/Scripts:$PATH
 
 install:
   - pip3 install -r requirements-test.txt
+  - pip3 install -e .
   - pytest --version
 
 script:
-  - pytest
+  - pytest -x

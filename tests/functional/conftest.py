@@ -1,4 +1,5 @@
 import os
+import sys
 from distutils import dir_util
 
 import pexpect
@@ -19,15 +20,32 @@ def sources_dir(tmpdir_factory):
 
 class Bash():
     def __init__(self, sources_dir):
-        scripts_dir = os.path.join(sources_dir, "shell")
-        script_file = os.path.join(scripts_dir, 'readline_completion.bash')
-        bin_path = os.path.join(sources_dir, "bin")
-        bash_startup = "env -i LANG=en_US.UTF-8 PATH=/usr/bin/:/bin:{} bash --noprofile --rcfile".format(bin_path)
-        cmd = "{} {}".format(bash_startup, script_file)
+        scripts_dir = sources_dir.join("shell")
+        complete_file = scripts_dir.join('readline_completion.bash')
+        script_file = scripts_dir.join('test_readline_bashrc.bash')
+        bash_startup = "\n".join(
+            [
+                "#!/usr/bin/env bash",
+                "source {}".format(complete_file),
+                "export PS1='\\u@\\h:\\w\\$' ",
+                "unset PROMPT_COMMAND",
+            ]
+        )
+        with script_file.open("w") as f:
+            f.write(bash_startup)
+        bin_path = sources_dir.join("bin")
+        self.cmd = (
+            "env -i "
+            "LANG=en_US.UTF-8 "
+            "PATH=/usr/bin/:/bin:{} "
+            "bash --noprofile --rcfile {} -i"
+        ).format(bin_path, script_file)
+
         self.p = pexpect.spawn(
-            cmd,
+            self.cmd,
             encoding='utf-8',
         )
+        self.p.logfile = sys.stdout
 
     def cd(self, diretory):
         self.p.sendline('cd {}'.format(diretory))
