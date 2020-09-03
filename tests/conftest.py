@@ -14,7 +14,7 @@ def setup_hypothesis():
 
     settings.register_profile(
         "ci",
-        max_examples=1000,
+        max_examples=100,
         deadline=timedelta(seconds=5),
     )
     settings.register_profile(

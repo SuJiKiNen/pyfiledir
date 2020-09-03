@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 # -*- coding: utf-8 -*-
 
-# A trick than run as shell script,find sutiable python version
+# A trick that run as shell script,find sutiable python version
 # and execute current script as Pyhton script
 # '''something''' seen as comment in Python
 ''':'  # equal a empty quoted string and a quoted colon(no-op)
@@ -30,10 +30,10 @@ sys.path.append(os.path.join(ROOT_DIR, "pyfiledir"))
 
 if __package__ is None or __package__ == '':
     # executed directly
-    from py_cli import process_args, parse_args
+    from py_cli import parse_args, process_args
 else:
     # imported as a package
-    from pyfiledir.py_cli import process_args, parse_args
+    from pyfiledir.py_cli import parse_args, process_args
 
 
 def main(args=None):
