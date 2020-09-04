@@ -110,3 +110,10 @@
    #+BEGIN_SRC shell
      python -m cProfile -m pyfiledir [option] <arg>
    #+END_SRC
+** testing
+   enable pyfiledir tests verbose debug.
+   #+BEGIN_SRC shell
+     pytest --pyfiledir-debug -s
+
+     PYTEST_ADDOPTS='--pyfiledir-debug -s' pytest
+   #+END_SRC
