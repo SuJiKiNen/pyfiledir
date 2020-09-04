@@ -19,7 +19,7 @@ def sources_dir(tmpdir_factory):
 
 
 class Bash():
-    def __init__(self, sources_dir):
+    def __init__(self, sources_dir, debug=False):
         scripts_dir = sources_dir.join("shell")
         complete_file = scripts_dir.join('readline_completion.bash')
         script_file = scripts_dir.join('test_readline_bashrc.bash')
@@ -29,7 +29,7 @@ class Bash():
                 "source {}".format(complete_file),
                 "export PS1='\\u@\\h:\\w\\$' ",
                 "unset PROMPT_COMMAND",
-            ]
+            ],
         )
         with script_file.open("w") as f:
             f.write(bash_startup)
@@ -40,12 +40,16 @@ class Bash():
             "PATH=/usr/bin/:/bin:{} "
             "bash --noprofile --rcfile {} -i"
         ).format(bin_path, script_file)
+        if debug:
+            self.cmd += " -x"
 
         self.p = pexpect.spawn(
             self.cmd,
             encoding='utf-8',
         )
-        self.p.logfile = sys.stdout
+
+        if debug:
+            self.p.logfile = sys.stdout
 
     def cd(self, diretory):
         self.p.sendline('cd {}'.format(diretory))
@@ -62,5 +66,5 @@ class Bash():
 
 
 @fixture(scope="function")
-def bash(sources_dir):
-    return Bash(sources_dir)
+def bash(sources_dir, pyfiledir_debug):
+    return Bash(sources_dir, pyfiledir_debug)

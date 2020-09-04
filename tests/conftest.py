@@ -66,3 +66,17 @@ def test_home_dir(fs, monkeypatch):
     # (Contributed by Anthony Sottile in bpo-36264.)
     monkeypatch.setenv('USERPROFILE', home_dir)
     return home_dir
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--pyfiledir-debug",
+        action='store_true',
+        default=False,
+        help="enable pyfiledir test debug,verbose output!",
+    )
+
+
+@pytest.fixture
+def pyfiledir_debug(request):
+    return request.config.getoption("--pyfiledir-debug")
