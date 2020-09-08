@@ -21,12 +21,14 @@ def sources_dir(tmpdir_factory):
 class Bash():
     def __init__(self, sources_dir, debug=False):
         scripts_dir = sources_dir.join("shell")
-        complete_file = scripts_dir.join('readline_completion.bash')
+        completion_file = scripts_dir.join('readline_completion.bash')
+        key_binding_file = scripts_dir.join('readline_key_binding.bash')
         script_file = scripts_dir.join('test_readline_bashrc.bash')
         bash_startup = "\n".join(
             [
                 "#!/usr/bin/env bash",
-                "source {}".format(complete_file),
+                "source {}".format(completion_file),
+                "source {}".format(key_binding_file),
                 "export PS1='\\u@\\h:\\w\\$' ",
                 "unset PROMPT_COMMAND",
             ],
