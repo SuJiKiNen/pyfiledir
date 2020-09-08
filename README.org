@@ -117,3 +117,16 @@
 
      PYTEST_ADDOPTS='--pyfiledir-debug -s' pytest
    #+END_SRC
+
+* Installation
+** readline
+   #+BEGIN_HTML
+   <p><pre>if you don't like default key binding <kbd>ALT</kbd>+<kbd>/</kbd>,
+   you could define your own key binding.</pre></p>
+   #+END_HTML
+   add following lines to your =.bashrc=.
+   #+BEGIN_SRC shell
+     source shell/readline_completion.bash
+
+     source shell/readline_key_binding.bash
+   #+END_SRC

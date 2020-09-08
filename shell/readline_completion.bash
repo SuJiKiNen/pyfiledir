@@ -69,7 +69,3 @@ function pyfiledir-filename-completions {
         READLINE_POINT=${OLD_READLINE_POINT}
     fi
 }
-
-if [ -n "$BASH_VERSION" ]; then
-    bind -x '"\e/":pyfiledir-filename-completions'
-fi
