@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Completing Chinese directories or filenames by notarikon of Pinyin.
+Completing Chinese directories or filenames by acronym of Pinyin.
 """
 
 import argparse
@@ -18,9 +18,9 @@ parser = argparse.ArgumentParser(
     add_help=False,
 )
 
-_notarikon_action = parser.add_argument(
-    "notarikon",
-    help="notarikon of Pinyin",
+_acronym_action = parser.add_argument(
+    "acronym",
+    help="acronym of Pinyin",
     nargs='?',
     default="",
 )
@@ -152,8 +152,8 @@ def process_args(args):
             process_print_bash_export_envs(args)
     elif args.version:
         process_print_versions(args)
-    elif args.notarikon:
-        print(do_py_completion(path=args.notarikon), end="")
+    elif args.acronym:
+        print(do_py_completion(path=args.acronym), end="")
     elif args.where:
         process_print_where(args)
     else:
