@@ -7,9 +7,6 @@ jobs:
 - job: 'tests'
   strategy:
     matrix:
-      Python35_Linux:
-        imageName: 'ubuntu-latest'
-        python.version: '3.5'
       Python36_Linux:
         imageName: 'ubuntu-latest'
         python.version: '3.6'
@@ -20,9 +17,6 @@ jobs:
         imageName: 'ubuntu-latest'
         python.version: '3.8'
 
-      Python35_MacOS:
-        imageName: 'macos-latest'
-        python.version: '3.5'
       Python36_MacOS:
         imageName: 'macos-latest'
         python.version: '3.6'
@@ -33,9 +27,6 @@ jobs:
         imageName: 'macos-latest'
         python.version: '3.8'
 
-      Python35_Windows:
-        imageName: 'windows-latest'
-        python.version: '3.5'
       Python36_Windows:
         imageName: 'windows-latest'
         python.version: '3.6'
