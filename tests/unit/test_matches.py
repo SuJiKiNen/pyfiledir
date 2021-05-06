@@ -7,12 +7,12 @@ from hypothesis import HealthCheck, given, settings
 from pyfakefs.fake_filesystem_unittest import Patcher
 
 from pyfiledir.py_core import (
-    PYFILEDIR_ENVS,
     as_unix_path,
     do_polyphone_match,
     do_py_completion,
     unicode_sort,
 )
+from pyfiledir.py_env import PYFILEDIR_ENVS
 from utils import file_sequence_strategy
 
 
@@ -56,13 +56,21 @@ def test_complete_implicit_current_directory(fs, test_home_dir):
 
 
 @pytest.mark.parametrize(
-    "dirs,files,typed,excepted", [
-        (["subdir1", "subdir2"], ["file1", "file2"], "~/", unicode_sort(["subdir1", "subdir2", "file1", "file2"])),
+    "dirs,files,typed,excepted",
+    [
+        (
+            ["subdir1", "subdir2"],
+            ["file1", "file2"],
+            "~/",
+            unicode_sort(["subdir1", "subdir2", "file1", "file2"]),
+        ),
         (["subdir1", "subdir2"], [], "~/", unicode_sort(["subdir1", "subdir2"])),
         ([], ["file1", "file2"], "~/", unicode_sort(["file1", "file2"])),
     ],
 )
-def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed, excepted, fs, test_home_dir):
+def test_empty_basename_match_all_files_or_dirs_in_directory(
+    dirs, files, typed, excepted, fs, test_home_dir
+):
     SEP = str(PYFILEDIR_ENVS.PYFILEDIR_CANDIDATE_SEP)
     for d in dirs:
         fs.create_dir(os.path.join(test_home_dir, d))
@@ -73,7 +81,8 @@ def test_empty_basename_match_all_files_or_dirs_in_directory(dirs, files, typed,
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (
             ["/1024", "/1025"],
             "/1",
@@ -98,7 +107,8 @@ def test_number_selection(dirs, typed, excepted, fs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (
             ["第{}组".format(i) for i in range(1, 9)],
             "d1",
@@ -135,7 +145,8 @@ def test_solo_completion_on_files_do_completion_again_not_add_forward_slash(fs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/docker", "/docker-pg-replication"], "/do", "/docker"),
         (["/测试", "/测试目录"], "/测1", "/测试/"),
         (
@@ -161,7 +172,8 @@ def test_add_forward_slash_functionality(fs, dirs, typed, excepted):
 
 
 @pytest.mark.parametrize(
-    "cn_char,alpha", [
+    "cn_char,alpha",
+    [
         ("重", "c"),
         ("重", "z"),
         ("乐", "l"),
@@ -173,7 +185,8 @@ def test_do_polyphone_match(cn_char, alpha):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/乐趣"], "/lq", ["/乐趣"]),
         (["/音乐"], "/yy", ["/音乐"]),
         (["/重要"], "/zy", ["/重要"]),
@@ -187,7 +200,8 @@ def test_polyphone_completion_mtach(dirs, typed, excepted, fs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/芙蓉", "/fr"], "/,,", ["/芙蓉"]),
         (["/目录"], "/,,", ["/目录"]),
     ],
@@ -199,7 +213,8 @@ def test_pyfiledir_wildcard_works(dirs, typed, excepted, fs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/test1", "/test2"], "/te", ["/test"]),
         (["/学习java", "/学习javascript"], "/x", ["/学习java"]),
         (
@@ -226,7 +241,8 @@ def test_complete_common_prefix_first(dirs, typed, excepted, fs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/Test1", "/TEST2"], "/te", unicode_sort(["/Test1", "/TEST2"])),
     ],
 )
@@ -244,7 +260,8 @@ def test_candidates_ignore_case(dirs, typed, excepted, fs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/㔿"], "/z", unicode_sort(["/㔿"])),  # zou
     ],
 )
@@ -291,7 +308,8 @@ def test_natural_sort_completion_results(file_seqs):
 
 
 @pytest.mark.parametrize(
-    "dirs,typed,excepted", [
+    "dirs,typed,excepted",
+    [
         (["/test1"], "/t1", [""]),
         (["/测试"], "/c1", [""]),
         (["/测试"], "/测1", ["/测试"]),

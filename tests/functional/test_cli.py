@@ -7,45 +7,48 @@ from pyfiledir.py_cli import (
     _version_action,
     _where_action,
 )
-from pyfiledir.py_core import PYFILEDIR_ENVS
+from pyfiledir.py_env import PYFILEDIR_ENVS
 
 
 @pytest.mark.parametrize(
-    "arg", [
+    "arg",
+    [
         *_version_action.option_strings,
     ],
 )
 def test_version(script_runner, arg):
-    ret = script_runner.run('pyfiledir', arg)
+    ret = script_runner.run("pyfiledir", arg)
     assert ret.success
     assert __version__ in ret.stdout
     for name in ["python", "pyfiledir", "unihan"]:
         assert name in ret.stdout.lower()
-    assert ret.stderr == ''
+    assert ret.stderr == ""
 
 
 @pytest.mark.parametrize(
-    "arg", [
+    "arg",
+    [
         "",
         *_help_action.option_strings,
     ],
 )
 def test_help(script_runner, arg):
-    ret = script_runner.run('pyfiledir', arg)
+    ret = script_runner.run("pyfiledir", arg)
     assert ret.success
-    assert ret.stderr == ''
+    assert ret.stderr == ""
 
 
 @pytest.mark.parametrize(
-    "args,special_expected_strs", [
-        (("-e", ), _HUMAN_READBLE_ENVS_HEADER),
+    "args,special_expected_strs",
+    [
+        (("-e",), _HUMAN_READBLE_ENVS_HEADER),
         (("-e", "bash"), ""),
     ],
 )
 def test_print_envs(script_runner, args, special_expected_strs):
-    ret = script_runner.run('pyfiledir', *args)
+    ret = script_runner.run("pyfiledir", *args)
     assert ret.success
-    assert ret.stderr == ''
+    assert ret.stderr == ""
     for expepted_str in special_expected_strs:
         assert expepted_str in ret.stdout
     for env in PYFILEDIR_ENVS:
@@ -53,12 +56,13 @@ def test_print_envs(script_runner, args, special_expected_strs):
 
 
 @pytest.mark.parametrize(
-    "arg", [
+    "arg",
+    [
         *_where_action.option_strings,
     ],
 )
 def test_where(script_runner, arg):
-    ret = script_runner.run('pyfiledir', arg)
+    ret = script_runner.run("pyfiledir", arg)
     assert ret.success
-    assert ret.stderr == ''
-    assert ret.stdout.strip().endswith('pyfiledir')
+    assert ret.stderr == ""
+    assert ret.stdout.strip().endswith("pyfiledir")

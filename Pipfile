@@ -5,7 +5,7 @@ verify_ssl = true
 
 [dev-packages]
 flake8 = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
-ipython = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "==7.8.0"}
+ipython = {version = "*", index = "http://mirrors.aliyun.com/pypi/simple/"}
 isort = {index = "http://mirrors.aliyun.com/pypi/simple/", version = "*"}
 jupyterlab = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 pandas = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
@@ -15,6 +15,7 @@ pyautogui = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 pyyaml = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 termtosvg = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 pillow = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
+black = {version = "*", index = "http://mirrors.aliyun.com/pypi/simple/"}
 
 [packages]
 hypothesis = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}

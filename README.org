@@ -55,7 +55,7 @@
 * Environment Variables
   #+BEGIN_SRC python :exports results
 
-    from pyfiledir.py_core import PYFILEDIR_ENVS
+    from pyfiledir.py_env import PYFILEDIR_ENVS
     results = []
     header = ["Environment variable name", "Default value", "Explanation"]
     results.append(header)
@@ -82,7 +82,7 @@
   pyfiledir default following some behaviors from .inputrc, see equivalents below:
 
   #+BEGIN_SRC python :exports results table
-    from pyfiledir.py_core import inputrc_to_pyfiledir_env_map
+    from pyfiledir.py_env import inputrc_to_pyfiledir_env_map
     results = []
     header = [
         "INPUTRC setting name",

@@ -7,13 +7,14 @@ from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 from pyfakefs.fake_filesystem_unittest import Patcher
 
-from pyfiledir import py_core
+from pyfiledir import py_core, py_env
 from pyfiledir.__main__ import main
 from utils import file_sequence_strategy
 
 
 @pytest.mark.parametrize(
-    "path,excepted", [
+    "path,excepted",
+    [
         ("test1", ("test1", slice(None, None, 1))),
         ("测试1", ("测试", slice(0, 1, 1))),
         ("0", ("0", slice(None, None, 1))),
@@ -26,7 +27,8 @@ def test_rsplit_selection(path, excepted):
 
 
 @pytest.mark.parametrize(
-    "path,excepted", [
+    "path,excepted",
+    [
         ("/test1", True),
         ("/测试1", False),
     ],
@@ -41,19 +43,22 @@ def test_same_path(fs, test_home_dir):
 
 @pytest.mark.parametrize(
     "char, excepted",
-    ([
-        ("a", "a"),
-        ("1", "1"),
-        ("好", "h"),
-        ("あ", "あ"),  # b'\xa4\xa2'
-    ]),
+    (
+        [
+            ("a", "a"),
+            ("1", "1"),
+            ("好", "h"),
+            ("あ", "あ"),  # b'\xa4\xa2'
+        ]
+    ),
 )
 def test_get_py(char, excepted):
     assert excepted in py_core.get_py(char)
 
 
 @pytest.mark.parametrize(
-    "env_val,excepted", [
+    "env_val,excepted",
+    [
         ("1", True),
         ("0", False),
         ("yes", True),
@@ -67,9 +72,9 @@ def test_get_py(char, excepted):
     ],
 )
 def test_get_truthy_env(env_val, excepted):
-    key = 'PYFILEDIR_ADD_TRAILING_SLASH'
+    key = "PYFILEDIR_ADD_TRAILING_SLASH"
     os.environ[key] = env_val
-    assert py_core.get_truthy_env(key) == excepted
+    assert py_env.get_truthy_env(key) == excepted
 
 
 def test_do_py_completion_on_not_exists_path():
@@ -78,7 +83,8 @@ def test_do_py_completion_on_not_exists_path():
 
 
 @pytest.mark.parametrize(
-    "files,typed", [
+    "files,typed",
+    [
         (["abc"], "abc"),
         (["arise", "are"], "a"),
     ],
@@ -108,7 +114,7 @@ def test_natural_sort(file_seqs):
 @given(
     inputrc_envs=st.dictionaries(
         st.sampled_from(
-            list(py_core.inputrc_to_pyfiledir_env_map.keys()),
+            list(py_env.inputrc_to_pyfiledir_env_map.keys()),
         ),
         st.booleans().map(lambda x: (x, "on") if x else (x, "off")),
     ),
@@ -116,28 +122,30 @@ def test_natural_sort(file_seqs):
 def test_load_env_from_from_inputrc_file(inputrc_envs):
 
     with Patcher(
-            modules_to_reload=[
-                py_core,
-            ],
+        modules_to_reload=[
+            py_core,
+        ],
     ) as patcher:
-        file_path = '/.inputrc'
+        file_path = "/.inputrc"
         contents = "\n".join(
             ("set {} {}".format(key, inputrc_envs[key][1]) for key in inputrc_envs)
         )
         patcher.fs.create_file(file_path, contents=contents)
-        ret = py_core.PYFILEDIR_ENVS.load_env_from_inputrc(file_path)
+        ret = py_env.PYFILEDIR_ENVS.load_env_from_inputrc(file_path)
         for key in inputrc_envs:
-            pyfiledir_env_name = py_core.inputrc_to_pyfiledir_env_map[key]
+            pyfiledir_env_name = py_env.inputrc_to_pyfiledir_env_map[key]
             assert ret[pyfiledir_env_name] == str(inputrc_envs[key][0])
 
         # check PYFILEDIR_ENVS setup successfully according inputrc file
         with patch.dict(
-                os.environ,
-                {
-                    'INPUTRC': file_path,
-                },
+            os.environ,
+            {
+                "INPUTRC": file_path,
+            },
         ):
-            py_core.PYFILEDIR_ENVS.collect_inputrc_envs()
+            py_env.PYFILEDIR_ENVS.collect_inputrc_envs()
             for key in inputrc_envs:
-                pyfiledir_env_name = py_core.inputrc_to_pyfiledir_env_map[key]
-                assert str(py_core.PYFILEDIR_ENVS[pyfiledir_env_name]) == str(inputrc_envs[key][0])
+                pyfiledir_env_name = py_env.inputrc_to_pyfiledir_env_map[key]
+                assert str(py_env.PYFILEDIR_ENVS[pyfiledir_env_name]) == str(
+                    inputrc_envs[key][0]
+                )

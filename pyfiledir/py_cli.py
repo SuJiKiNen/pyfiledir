@@ -6,10 +6,12 @@ Completing Chinese directories or filenames by notarikon of Pinyin.
 
 import argparse
 
-if __package__ is None or __package__ == '':
-    from py_core import PYFILEDIR_ENVS, do_py_completion
+if __package__ is None or __package__ == "":
+    from py_core import do_py_completion
+    from py_env import PYFILEDIR_ENVS
 else:
-    from pyfiledir.py_core import PYFILEDIR_ENVS, do_py_completion
+    from pyfiledir.py_core import do_py_completion
+    from pyfiledir import PYFILEDIR_ENVS
 
 parser = argparse.ArgumentParser(
     prog="pyfiledir",
@@ -21,38 +23,39 @@ parser = argparse.ArgumentParser(
 _notarikon_action = parser.add_argument(
     "notarikon",
     help="notarikon of Pinyin",
-    nargs='?',
+    nargs="?",
     default="",
 )
 
 _help_action = parser.add_argument(
-    '-h',
-    '--help',
-    action='help', default=argparse.SUPPRESS,
-    help='Show this help message and exit.',
+    "-h",
+    "--help",
+    action="help",
+    default=argparse.SUPPRESS,
+    help="Show this help message and exit.",
 )
 
 _envs_action = parser.add_argument(
     "-e",
     "--envs",
-    nargs='?',
+    nargs="?",
     const="human",
     dest="output_env_type",
     help="print available environment variables.",
 )
 
 _version_action = parser.add_argument(
-    '-v',
-    '-V',
-    '--version',
-    action='store_true',
-    help='print pyfiledir version.',
+    "-v",
+    "-V",
+    "--version",
+    action="store_true",
+    help="print pyfiledir version.",
 )
 
 _where_action = parser.add_argument(
     "-w",
     "--where",
-    action='store_true',
+    action="store_true",
     help="print where pyfiledir is.",
 )
 
@@ -90,9 +93,15 @@ def process_print_envs(args):
 
     PADDING = 2
     row_format = (
-        "{:<" + str(max_env_name_len + PADDING) + "}" +
-        "{:^" + str(max_env_type_len + PADDING) + "}" +
-        "{:^" + str(max_env_value_len + PADDING) + "}"
+        "{:<"
+        + str(max_env_name_len + PADDING)
+        + "}"
+        + "{:^"
+        + str(max_env_type_len + PADDING)
+        + "}"
+        + "{:^"
+        + str(max_env_value_len + PADDING)
+        + "}"
     )
 
     print(row_format.format(*_HUMAN_READBLE_ENVS_HEADER))
@@ -115,6 +124,7 @@ def process_print_versions(args):
     import sys
     from __version__ import __version__
     from __unihan import __unihan_version__, __unihan_data_file_url__
+
     print(
         "{:<9} {:<10} from ({})".format(
             platform.python_implementation(),
@@ -140,6 +150,7 @@ def process_print_versions(args):
 
 def process_print_where(args):
     import sys
+
     print(sys.argv[0])
 
 
