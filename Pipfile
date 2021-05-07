@@ -22,7 +22,7 @@ hypothesis = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 pexpect = {index = "http://mirrors.aliyun.com/pypi/simple/", version = "*"}
 pyfakefs = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 pytest = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
-pytest-console-scripts = {index = "http://mirrors.aliyun.com/pypi/simple/", version = "*"}
+pytest-console-scripts = "==1.1.0"
 pytest-cov = {index = "http://mirrors.aliyun.com/pypi/simple/",version = "*"}
 
 [requires]

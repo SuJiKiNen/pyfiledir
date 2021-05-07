@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "61db37e387b57194f61bae193d73fb064055d9a1a658999d29f1caaa26b78869"
+            "sha256": "5a7496d1fde830b305b8d4986068942b29cbf763372f82bf2e9aad73f625c689"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -178,10 +178,10 @@
         },
         "pytest-console-scripts": {
             "hashes": [
-                "sha256:4a2138d7d567bc581fe081b6a5975849a2a36b3925cb0f066d2380103e13741c"
+                "sha256:c1344853e80d8096403e36b270254a094071d0c4f1533e94a91d7386f0f1ccfd"
             ],
-            "index": "http://mirrors.aliyun.com/pypi/simple/",
-            "version": "==1.2.0"
+            "index": "pypi",
+            "version": "==1.1.0"
         },
         "pytest-cov": {
             "hashes": [
