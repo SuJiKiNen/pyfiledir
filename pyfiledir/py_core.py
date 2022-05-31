@@ -46,7 +46,7 @@ def get_env(env_name):
 class PYFILEDIR_ENVS(Enum):
 
     PYFILEDIR_CANDIDATE_SEP = ["\n", "how pyfiledir join candidates", str]
-    PYFILEDIR_WILDCARD = [",", "wildcard match charactor for dir or file", str]
+    PYFILEDIR_WILDCARD = [",", "wildcard character when doing match", str]
     PYFILEDIR_ADD_TRAILING_SLASH = [True, "add trailing slash for directory candidate", bool]
     PYFILEDIR_KEEP_LEADING_DOT_SLASH = [True, "keep leading ./ in path", bool]
     PYFILEDIR_COMPLETE_COMMON_PREFIX = [True, "complete common prefix of candidates first", bool]
