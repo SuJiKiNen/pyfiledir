@@ -7,44 +7,53 @@ jobs:
 - job: 'tests'
   strategy:
     matrix:
-      Python35_Linux:
-        imageName: 'ubuntu-latest'
-        python.version: '3.5'
-      Python36_Linux:
-        imageName: 'ubuntu-latest'
-        python.version: '3.6'
       Python37_Linux:
         imageName: 'ubuntu-latest'
         python.version: '3.7'
       Python38_Linux:
         imageName: 'ubuntu-latest'
         python.version: '3.8'
+      Python39_Linux:
+        imageName: 'ubuntu-latest'
+        python.version: '3.9'
+      Python310_Linux:
+        imageName: 'ubuntu-latest'
+        python.version: '3.10'
+      Python311_Linux:
+        imageName: 'ubuntu-latest'
+        python.version: '3.11'
 
-      Python35_MacOS:
-        imageName: 'macos-latest'
-        python.version: '3.5'
-      Python36_MacOS:
-        imageName: 'macos-latest'
-        python.version: '3.6'
       Python37_MacOS:
         imageName: 'macos-latest'
         python.version: '3.7'
       Python38_MacOS:
         imageName: 'macos-latest'
         python.version: '3.8'
+      Python39_MacOS:
+        imageName: 'macos-latest'
+        python.version: '3.9'
+      Python310_MacOS:
+        imageName: 'macos-latest'
+        python.version: '3.10'
+      Python311_MacOS:
+        imageName: 'macos-latest'
+        python.version: '3.11'
 
-      Python35_Windows:
-        imageName: 'windows-latest'
-        python.version: '3.5'
-      Python36_Windows:
-        imageName: 'windows-latest'
-        python.version: '3.6'
       Python37_Windows:
         imageName: 'windows-latest'
         python.version: '3.7'
       Python38_Windows:
         imageName: 'windows-latest'
         python.version: '3.8'
+      Python39_Windows:
+        imageName: 'windows-latest'
+        python.version: '3.9'
+      Python310_Windows:
+        imageName: 'windows-latest'
+        python.version: '3.10'
+      Python311_Windows:
+        imageName: 'windows-latest'
+        python.version: '3.11'
 
   pool:
     vmImage: '$(imageName)'
